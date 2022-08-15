@@ -1,0 +1,39 @@
+.backdrop {
+  background-color: rgba(0, 0, 0, 0.7);
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.foreground {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  height: 33%;
+  width: 33%;
+  background-color: whitesmoke;
+  transform: translate(-50%, -50%);
+  border-radius: 15px;
+  padding: 1rem;
+  color: black;
+}
+.dropzone {
+  color: black !important;
+  padding: 1rem;
+  border: 1px black dashed;
+}
+.uploading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  height: 33%;
+  width: 33%;
+  background-color: rgb(4, 155, 4);
+  color: white;
+  transform: translate(-50%, -50%);
+  border-radius: 15px;
+  padding: 1rem;
+  z-index: 3;
+  font-size: xx-large;
+}

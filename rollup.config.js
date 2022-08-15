@@ -1,12 +1,14 @@
 import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 import typescript from "@rollup/plugin-typescript";
+import postcss from "rollup-plugin-postcss";
 import dts from "rollup-plugin-dts";
 
 const packageJson = require("./package.json");
 
 export default [
   {
+    external: ["react", "react-dom", "react-quill"],
     input: "src/index.ts",
     output: [
       {
@@ -24,11 +26,13 @@ export default [
       resolve(),
       commonjs(),
       typescript({ tsconfig: "./tsconfig.json" }),
+      postcss(),
     ],
   },
   {
-    input: "dist/esm/types/index.d.ts",
+    input: "dist/esm/index.d.ts",
     output: [{ file: "dist/index.d.ts", format: "esm" }],
     plugins: [dts()],
+    external: [/\.(css|less|scss)$/],
   },
 ];
