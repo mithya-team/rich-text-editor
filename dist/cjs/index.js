@@ -2953,6 +2953,48 @@ const Modal = ({ imageUploader, insertImage }) => {
 var css_248z = ".main {\n  display: grid;\n  place-items: center;\n}\n.ql-addImage {\n  background-image: url(\"./add-image.svg\") !important;\n  background-repeat: no-repeat !important;\n}\n";
 styleInject(css_248z);
 
+exports.toolbarOptions = void 0;
+(function (toolbarOptions) {
+    toolbarOptions[toolbarOptions["fontStyle"] = 0] = "fontStyle";
+    toolbarOptions[toolbarOptions["quoteCode"] = 1] = "quoteCode";
+    toolbarOptions[toolbarOptions["headers"] = 2] = "headers";
+    toolbarOptions[toolbarOptions["list"] = 3] = "list";
+    toolbarOptions[toolbarOptions["indentation"] = 4] = "indentation";
+    toolbarOptions[toolbarOptions["font"] = 5] = "font";
+    toolbarOptions[toolbarOptions["script"] = 6] = "script";
+    toolbarOptions[toolbarOptions["align"] = 7] = "align";
+    toolbarOptions[toolbarOptions["clear"] = 8] = "clear";
+})(exports.toolbarOptions || (exports.toolbarOptions = {}));
+const buildModule = (modules, options) => {
+    if (options.find((s) => s == exports.toolbarOptions.fontStyle))
+        modules.toolbar.container.push(["bold", "italic", "underline", "strike"]);
+    if (options.find((s) => s == exports.toolbarOptions.quoteCode))
+        modules.toolbar.container.push(["blockquote", "code-block"]);
+    if (options.find((s) => s == exports.toolbarOptions.headers)) {
+        modules.toolbar.container.push([{ header: 1 }, { header: 2 }]);
+        modules.toolbar.container.push([{ header: [1, 2, 3, 4, 5, 6, false] }]);
+    }
+    if (options.find((s) => s == exports.toolbarOptions.list))
+        modules.toolbar.container.push([{ list: "ordered" }, { list: "bullet" }]);
+    if (options.find((s) => s == exports.toolbarOptions.indentation))
+        modules.toolbar.container.push([{ indent: "-1" }, { indent: "+1" }]);
+    if (options.find((s) => s == exports.toolbarOptions.font)) {
+        modules.toolbar.container.push([{ font: [] }]);
+        modules.toolbar.container.push([{ direction: "rtl" }]);
+        modules.toolbar.container.push([
+            { size: ["small", false, "large", "huge"] },
+        ]);
+    }
+    if (options.find((s) => s == exports.toolbarOptions.script))
+        modules.toolbar.container.push([{ script: "sub" }, { script: "super" }]);
+    if (options.find((s) => s == exports.toolbarOptions.align))
+        modules.toolbar.container.push([{ align: [] }]);
+    if (options.find((s) => s == exports.toolbarOptions.clear))
+        modules.toolbar.container.push(["clean"]);
+    modules.toolbar.container.push(["image"]);
+    return modules;
+};
+
 const Editor = ({ imageUploader, options }) => {
     const [showModal, setShowModal] = React.useState(false);
     const openModal = () => setShowModal(true);
@@ -2968,47 +3010,21 @@ const Editor = ({ imageUploader, options }) => {
         closeModal();
     };
     const modules = React.useMemo(() => {
-        const modules = {
+        return buildModule({
             toolbar: {
                 container: [],
                 handlers: {
                     image: addImageHandler,
                 },
             },
-        };
-        if (options.find((s) => s == "font-style"))
-            modules.toolbar.container.push(["bold", "italic", "underline", "strike"]);
-        if (options.find((s) => s == "quote/code"))
-            modules.toolbar.container.push(["blockquote", "code-block"]);
-        if (options.find((s) => s == "headers")) {
-            modules.toolbar.container.push([{ header: 1 }, { header: 2 }]);
-            modules.toolbar.container.push([{ header: [1, 2, 3, 4, 5, 6, false] }]);
-        }
-        if (options.find((s) => s == "list"))
-            modules.toolbar.container.push([{ list: "ordered" }, { list: "bullet" }]);
-        if (options.find((s) => s == "indentation"))
-            modules.toolbar.container.push([{ indent: "-1" }, { indent: "+1" }]);
-        if (options.find((s) => s == "font")) {
-            modules.toolbar.container.push([{ font: [] }]);
-            modules.toolbar.container.push([{ direction: "rtl" }]);
-            modules.toolbar.container.push([
-                { size: ["small", false, "large", "huge"] },
-            ]);
-        }
-        if (options.find((s) => s == "script"))
-            modules.toolbar.container.push([{ script: "sub" }, { script: "super" }]);
-        if (options.find((s) => s == "align"))
-            modules.toolbar.container.push([{ align: [] }]);
-        if (options.find((s) => s == "clear"))
-            modules.toolbar.container.push(["clean"]);
-        modules.toolbar.container.push(["image"]);
-        return modules;
+        }, options);
     }, [options]);
     return (React__default["default"].createElement("div", { className: "main" },
         React__default["default"].createElement("div", null,
-            React__default["default"].createElement(ReactQuill__default["default"], { theme: "snow", defaultValue: "", modules: modules, ref: quillObj }),
+            React__default["default"].createElement(ReactQuill__default["default"], { defaultValue: "", modules: modules, ref: quillObj }),
             showModal && (React__default["default"].createElement(Modal, { imageUploader: imageUploader, insertImage: insertImage })))));
 };
 
 exports.Editor = Editor;
+exports.buildModule = buildModule;
 //# sourceMappingURL=index.js.map

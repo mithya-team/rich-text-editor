@@ -2,15 +2,36 @@ import React, { useMemo, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Modal } from "../Modal";
-
 import "./Editor.css";
+import { buildModule, toolbarOptions } from "./ModuleBuilder";
 
 export interface EditorProps {
+  id: any | undefined;
+  className: any | undefined;
+  value: any | undefined;
+  defaultValue: any | undefined;
+  readOnly: any | undefined;
+  placeholder: any | undefined;
+  modules: any | undefined;
+  formats: any | undefined;
+  style: any | undefined;
+  theme: any | undefined;
+  tabIndex: any | undefined;
+  bounds: any | undefined;
+  children: any | undefined;
+  onChange: any | undefined;
+  onChangeSelection: any | undefined;
+  onFocus: any | undefined;
+  onBlur: any | undefined;
+  onKeyPress: any | undefined;
+  onKeyDown: any | undefined;
+  onKeyUp: any | undefined;
+  preserveWhitespace: any | undefined;
   imageUploader: (file: File) => Promise<string>;
-  options: string[];
+  options: toolbarOptions[];
 }
 
-const Editor = ({ imageUploader, options }: EditorProps) => {
+export const Editor = ({ imageUploader, options }: EditorProps) => {
   const [showModal, setShowModal] = useState(false);
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
@@ -27,62 +48,23 @@ const Editor = ({ imageUploader, options }: EditorProps) => {
   };
 
   const modules = useMemo(() => {
-    const modules: any = {
-      toolbar: {
-        container: [],
-        handlers: {
-          image: addImageHandler,
+    return buildModule(
+      {
+        toolbar: {
+          container: [],
+          handlers: {
+            image: addImageHandler,
+          },
         },
       },
-    };
-
-    if (options.find((s) => s == "font-style"))
-      modules.toolbar.container.push(["bold", "italic", "underline", "strike"]);
-
-    if (options.find((s) => s == "quote/code"))
-      modules.toolbar.container.push(["blockquote", "code-block"]);
-
-    if (options.find((s) => s == "headers")) {
-      modules.toolbar.container.push([{ header: 1 }, { header: 2 }]);
-      modules.toolbar.container.push([{ header: [1, 2, 3, 4, 5, 6, false] }]);
-    }
-
-    if (options.find((s) => s == "list"))
-      modules.toolbar.container.push([{ list: "ordered" }, { list: "bullet" }]);
-
-    if (options.find((s) => s == "indentation"))
-      modules.toolbar.container.push([{ indent: "-1" }, { indent: "+1" }]);
-
-    if (options.find((s) => s == "font")) {
-      modules.toolbar.container.push([{ font: [] }]);
-      modules.toolbar.container.push([{ direction: "rtl" }]);
-      modules.toolbar.container.push([
-        { size: ["small", false, "large", "huge"] },
-      ]);
-    }
-
-    if (options.find((s) => s == "script"))
-      modules.toolbar.container.push([{ script: "sub" }, { script: "super" }]);
-
-    if (options.find((s) => s == "align"))
-      modules.toolbar.container.push([{ align: [] }]);
-
-    if (options.find((s) => s == "clear"))
-      modules.toolbar.container.push(["clean"]);
-
-    modules.toolbar.container.push(["image"]);
-    return modules;
+      options
+    );
   }, [options]);
 
   return (
     <div className="main">
       <div>
-        <ReactQuill
-          theme="snow"
-          defaultValue={""}
-          modules={modules}
-          ref={quillObj}
-        />
+        <ReactQuill defaultValue={""} modules={modules} ref={quillObj} />
         {showModal && (
           <Modal imageUploader={imageUploader} insertImage={insertImage} />
         )}
@@ -90,5 +72,3 @@ const Editor = ({ imageUploader, options }: EditorProps) => {
     </div>
   );
 };
-
-export default Editor;

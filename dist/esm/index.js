@@ -2944,6 +2944,48 @@ const Modal = ({ imageUploader, insertImage }) => {
 var css_248z = ".main {\n  display: grid;\n  place-items: center;\n}\n.ql-addImage {\n  background-image: url(\"./add-image.svg\") !important;\n  background-repeat: no-repeat !important;\n}\n";
 styleInject(css_248z);
 
+var toolbarOptions;
+(function (toolbarOptions) {
+    toolbarOptions[toolbarOptions["fontStyle"] = 0] = "fontStyle";
+    toolbarOptions[toolbarOptions["quoteCode"] = 1] = "quoteCode";
+    toolbarOptions[toolbarOptions["headers"] = 2] = "headers";
+    toolbarOptions[toolbarOptions["list"] = 3] = "list";
+    toolbarOptions[toolbarOptions["indentation"] = 4] = "indentation";
+    toolbarOptions[toolbarOptions["font"] = 5] = "font";
+    toolbarOptions[toolbarOptions["script"] = 6] = "script";
+    toolbarOptions[toolbarOptions["align"] = 7] = "align";
+    toolbarOptions[toolbarOptions["clear"] = 8] = "clear";
+})(toolbarOptions || (toolbarOptions = {}));
+const buildModule = (modules, options) => {
+    if (options.find((s) => s == toolbarOptions.fontStyle))
+        modules.toolbar.container.push(["bold", "italic", "underline", "strike"]);
+    if (options.find((s) => s == toolbarOptions.quoteCode))
+        modules.toolbar.container.push(["blockquote", "code-block"]);
+    if (options.find((s) => s == toolbarOptions.headers)) {
+        modules.toolbar.container.push([{ header: 1 }, { header: 2 }]);
+        modules.toolbar.container.push([{ header: [1, 2, 3, 4, 5, 6, false] }]);
+    }
+    if (options.find((s) => s == toolbarOptions.list))
+        modules.toolbar.container.push([{ list: "ordered" }, { list: "bullet" }]);
+    if (options.find((s) => s == toolbarOptions.indentation))
+        modules.toolbar.container.push([{ indent: "-1" }, { indent: "+1" }]);
+    if (options.find((s) => s == toolbarOptions.font)) {
+        modules.toolbar.container.push([{ font: [] }]);
+        modules.toolbar.container.push([{ direction: "rtl" }]);
+        modules.toolbar.container.push([
+            { size: ["small", false, "large", "huge"] },
+        ]);
+    }
+    if (options.find((s) => s == toolbarOptions.script))
+        modules.toolbar.container.push([{ script: "sub" }, { script: "super" }]);
+    if (options.find((s) => s == toolbarOptions.align))
+        modules.toolbar.container.push([{ align: [] }]);
+    if (options.find((s) => s == toolbarOptions.clear))
+        modules.toolbar.container.push(["clean"]);
+    modules.toolbar.container.push(["image"]);
+    return modules;
+};
+
 const Editor = ({ imageUploader, options }) => {
     const [showModal, setShowModal] = useState(false);
     const openModal = () => setShowModal(true);
@@ -2959,47 +3001,20 @@ const Editor = ({ imageUploader, options }) => {
         closeModal();
     };
     const modules = useMemo(() => {
-        const modules = {
+        return buildModule({
             toolbar: {
                 container: [],
                 handlers: {
                     image: addImageHandler,
                 },
             },
-        };
-        if (options.find((s) => s == "font-style"))
-            modules.toolbar.container.push(["bold", "italic", "underline", "strike"]);
-        if (options.find((s) => s == "quote/code"))
-            modules.toolbar.container.push(["blockquote", "code-block"]);
-        if (options.find((s) => s == "headers")) {
-            modules.toolbar.container.push([{ header: 1 }, { header: 2 }]);
-            modules.toolbar.container.push([{ header: [1, 2, 3, 4, 5, 6, false] }]);
-        }
-        if (options.find((s) => s == "list"))
-            modules.toolbar.container.push([{ list: "ordered" }, { list: "bullet" }]);
-        if (options.find((s) => s == "indentation"))
-            modules.toolbar.container.push([{ indent: "-1" }, { indent: "+1" }]);
-        if (options.find((s) => s == "font")) {
-            modules.toolbar.container.push([{ font: [] }]);
-            modules.toolbar.container.push([{ direction: "rtl" }]);
-            modules.toolbar.container.push([
-                { size: ["small", false, "large", "huge"] },
-            ]);
-        }
-        if (options.find((s) => s == "script"))
-            modules.toolbar.container.push([{ script: "sub" }, { script: "super" }]);
-        if (options.find((s) => s == "align"))
-            modules.toolbar.container.push([{ align: [] }]);
-        if (options.find((s) => s == "clear"))
-            modules.toolbar.container.push(["clean"]);
-        modules.toolbar.container.push(["image"]);
-        return modules;
+        }, options);
     }, [options]);
     return (React.createElement("div", { className: "main" },
         React.createElement("div", null,
-            React.createElement(ReactQuill, { theme: "snow", defaultValue: "", modules: modules, ref: quillObj }),
+            React.createElement(ReactQuill, { defaultValue: "", modules: modules, ref: quillObj }),
             showModal && (React.createElement(Modal, { imageUploader: imageUploader, insertImage: insertImage })))));
 };
 
-export { Editor };
+export { Editor, buildModule, toolbarOptions };
 //# sourceMappingURL=index.js.map
