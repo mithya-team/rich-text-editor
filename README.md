@@ -4,7 +4,7 @@
   - [1.3. Getting started with rich-text-editor](#13-Getting-started-with-rich-text-editor)
   - [1.4. react-quill props](#14-react-quill-props)
   - [1.5. Props](#15-Props)
-    - [1.5.1. Options ](#151-Options)
+    - [1.5.1. options ](#151-options)
     - [1.5.2. Image Uploader](#152-Image-Uploader)
 
 ---
@@ -79,20 +79,20 @@ the following props have the same functionality as provided in [react-quill](htt
 
 ## 1.5. Props 
 
-### 1.5.1 Options 
-The Options must be an array of type enum toolbarOptions. Each enum represent an icon(s) on the toolbar.
+### 1.5.1 options 
+The options must be an array of type enum toolbarOptions. Each enum represent an icon(s) on the toolbar.
 
 ```js
 enum toolbarOptions {
   fontStyle,    // bold, italic, underline, strike
-  quoteCode,        // blockquote, code-block
-  headers,          // heading sizes
-  list,				// unordered, ordered list
-  indentation,		// indent controls
-  font,				// font, font-direction, font-size
-  script,			// subscript, superscript
-  align,			// alignment controls
-  clear,			// clear all text
+  quoteCode,    // blockquote, code-block
+  headers,      // heading sizes
+  list,		// unordered, ordered list
+  indentation,	// indent controls
+  font,		// font, font-direction, font-size
+  script,	// subscript, superscript
+  align,	// alignment controls
+  clear,	// clear all text
 }
 ```
 
