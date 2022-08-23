@@ -52,30 +52,12 @@ function App() {
 export default App;
 ```
 
-## 1.4. react-quill props
-the following props have the same functionality as provided in [react-quill](https://www.npmjs.com/package/react-quill) library. Passing these props overrides any other settings we provide. Please refer to react-quill documentation.
-- id
-- className    
-- value
-- defaultValue
-- readOnly
-- placeholder
-- modules
-- formats
-- style
-- theme
-- tabIndex
-- bounds
-- children
-- onChange(content, delta, source, editor)
-- onChangeSelection(range, source, editor)
-- onFocus(range, source, editor)
-- onBlur(previousRange, source, editor)
-- onKeyPress(event)
-- onKeyDown(event)
-- onKeyUp(event)
-- preserveWhitespace
-
+## 1.4. quillProps
+you can pass props as you would pass to a react-quill instance which have the same functionality as provided in [react-quill](https://www.npmjs.com/package/react-quill) library. Passing these props overrides any other settings we provide. Please refer to react-quill documentation.
+ 
+```js
+ <Editor quillProps={ ...}/>
+```
 
 ## 1.5. Props 
 
