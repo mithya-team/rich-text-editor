@@ -8,35 +8,16 @@ declare enum toolbarOptions {
     font = 5,
     script = 6,
     align = 7,
-    clear = 8
+    clear = 8,
+    image = 9
 }
-declare const buildModule: (modules: any, options: toolbarOptions[]) => any;
+declare const buildContainer: (options: toolbarOptions[] | undefined) => any;
 
 interface EditorProps {
-    id: any | undefined;
-    className: any | undefined;
-    value: any | undefined;
-    defaultValue: any | undefined;
-    readOnly: any | undefined;
-    placeholder: any | undefined;
-    modules: any | undefined;
-    formats: any | undefined;
-    style: any | undefined;
-    theme: any | undefined;
-    tabIndex: any | undefined;
-    bounds: any | undefined;
-    children: any | undefined;
-    onChange: any | undefined;
-    onChangeSelection: any | undefined;
-    onFocus: any | undefined;
-    onBlur: any | undefined;
-    onKeyPress: any | undefined;
-    onKeyDown: any | undefined;
-    onKeyUp: any | undefined;
-    preserveWhitespace: any | undefined;
-    imageUploader: (file: File) => Promise<string>;
-    options: toolbarOptions[];
+    quillProps: any | undefined;
+    imageUploader: ((file: File) => Promise<string>) | undefined;
+    options: toolbarOptions[] | undefined;
 }
-declare const Editor: ({ imageUploader, options }: EditorProps) => JSX.Element;
+declare const Editor: ({ quillProps, imageUploader, options }: EditorProps) => JSX.Element;
 
-export { Editor, EditorProps, buildModule, toolbarOptions };
+export { Editor, EditorProps, buildContainer, toolbarOptions };

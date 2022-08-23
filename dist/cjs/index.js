@@ -2944,7 +2944,13 @@ const onDefault = () => {
 const onUploading = () => {
     return React__default["default"].createElement("div", { className: "uploading" }, "Uploading...");
 };
-const Modal = ({ imageUploader, insertImage }) => {
+const Modal = ({ imageUploader, quillObj, closeModal }) => {
+    const insertImage = (url) => {
+        quillObj.current.getEditor().focus();
+        const range = quillObj.current.getEditor().getSelection();
+        quillObj.current.getEditor().insertEmbed(range.index, "image", url);
+        closeModal();
+    };
     return (React__default["default"].createElement("div", { className: "backdrop" },
         React__default["default"].createElement("div", { className: "foreground" },
             React__default["default"].createElement(UploadZone, { onDefault: onDefault, onUploading: onUploading, uploadTo: imageUploader, onFinish: insertImage }))));
@@ -2964,67 +2970,84 @@ exports.toolbarOptions = void 0;
     toolbarOptions[toolbarOptions["script"] = 6] = "script";
     toolbarOptions[toolbarOptions["align"] = 7] = "align";
     toolbarOptions[toolbarOptions["clear"] = 8] = "clear";
+    toolbarOptions[toolbarOptions["image"] = 9] = "image";
 })(exports.toolbarOptions || (exports.toolbarOptions = {}));
-const buildModule = (modules, options) => {
-    if (options.find((s) => s == exports.toolbarOptions.fontStyle))
-        modules.toolbar.container.push(["bold", "italic", "underline", "strike"]);
-    if (options.find((s) => s == exports.toolbarOptions.quoteCode))
-        modules.toolbar.container.push(["blockquote", "code-block"]);
-    if (options.find((s) => s == exports.toolbarOptions.headers)) {
-        modules.toolbar.container.push([{ header: 1 }, { header: 2 }]);
-        modules.toolbar.container.push([{ header: [1, 2, 3, 4, 5, 6, false] }]);
-    }
-    if (options.find((s) => s == exports.toolbarOptions.list))
-        modules.toolbar.container.push([{ list: "ordered" }, { list: "bullet" }]);
-    if (options.find((s) => s == exports.toolbarOptions.indentation))
-        modules.toolbar.container.push([{ indent: "-1" }, { indent: "+1" }]);
-    if (options.find((s) => s == exports.toolbarOptions.font)) {
-        modules.toolbar.container.push([{ font: [] }]);
-        modules.toolbar.container.push([{ direction: "rtl" }]);
-        modules.toolbar.container.push([
-            { size: ["small", false, "large", "huge"] },
-        ]);
-    }
-    if (options.find((s) => s == exports.toolbarOptions.script))
-        modules.toolbar.container.push([{ script: "sub" }, { script: "super" }]);
-    if (options.find((s) => s == exports.toolbarOptions.align))
-        modules.toolbar.container.push([{ align: [] }]);
-    if (options.find((s) => s == exports.toolbarOptions.clear))
-        modules.toolbar.container.push(["clean"]);
-    modules.toolbar.container.push(["image"]);
-    return modules;
+const buildContainer = (options) => {
+    if (!options)
+        options = [
+            exports.toolbarOptions.fontStyle,
+            exports.toolbarOptions.list,
+            exports.toolbarOptions.align,
+            exports.toolbarOptions.font,
+            exports.toolbarOptions.image,
+            exports.toolbarOptions.clear,
+        ];
+    let container = [];
+    options.forEach((o) => {
+        switch (o) {
+            case exports.toolbarOptions.fontStyle:
+                container.push(["bold", "italic", "underline", "strike"]);
+                break;
+            case exports.toolbarOptions.quoteCode:
+                container = [...container, ["blockquote", "code-block"]];
+                break;
+            case exports.toolbarOptions.headers:
+                container = [
+                    ...container,
+                    [{ header: 1 }, { header: 2 }],
+                    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                ];
+                break;
+            case exports.toolbarOptions.list:
+                container = [...container, [{ list: "ordered" }, { list: "bullet" }]];
+                break;
+            case exports.toolbarOptions.indentation:
+                container = [...container, [{ indent: "-1" }, { indent: "+1" }]];
+                break;
+            case exports.toolbarOptions.font:
+                container = [
+                    ...container,
+                    [{ font: [] }],
+                    [{ direction: "rtl" }],
+                    [{ size: ["small", false, "large", "huge"] }],
+                ];
+                break;
+            case exports.toolbarOptions.script:
+                container = [...container, [{ script: "sub" }, { script: "super" }]];
+                break;
+            case exports.toolbarOptions.align:
+                container = [...container, [{ align: [] }]];
+                break;
+            case exports.toolbarOptions.image:
+                container = [...container, ["image"]];
+                break;
+            case exports.toolbarOptions.clear:
+                container = [...container, ["clean"]];
+                break;
+        }
+    });
+    return container;
 };
 
-const Editor = ({ imageUploader, options }) => {
+const Editor = ({ quillProps, imageUploader, options }) => {
     const [showModal, setShowModal] = React.useState(false);
     const openModal = () => setShowModal(true);
     const closeModal = () => setShowModal(false);
     const quillObj = React.useRef();
-    const addImageHandler = () => {
-        openModal();
-    };
-    const insertImage = (url) => {
-        quillObj.current.getEditor().focus();
-        const range = quillObj.current.getEditor().getSelection();
-        quillObj.current.getEditor().insertEmbed(range.index, "image", url);
-        closeModal();
-    };
     const modules = React.useMemo(() => {
-        return buildModule({
+        return {
             toolbar: {
-                container: [],
-                handlers: {
-                    image: addImageHandler,
-                },
+                container: buildContainer(options),
+                handlers: imageUploader ? { image: openModal } : {},
             },
-        }, options);
-    }, [options]);
+        };
+    }, [options, imageUploader]);
     return (React__default["default"].createElement("div", { className: "main" },
         React__default["default"].createElement("div", null,
-            React__default["default"].createElement(ReactQuill__default["default"], { defaultValue: "", modules: modules, ref: quillObj }),
-            showModal && (React__default["default"].createElement(Modal, { imageUploader: imageUploader, insertImage: insertImage })))));
+            React__default["default"].createElement(ReactQuill__default["default"], Object.assign({ modules: modules }, quillProps, { ref: quillObj })),
+            imageUploader && showModal && (React__default["default"].createElement(Modal, { imageUploader: imageUploader, quillObj: quillObj, closeModal: closeModal })))));
 };
 
 exports.Editor = Editor;
-exports.buildModule = buildModule;
+exports.buildContainer = buildContainer;
 //# sourceMappingURL=index.js.map

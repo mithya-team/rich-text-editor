@@ -4,7 +4,8 @@ import "./Modal.css";
 
 export interface ModalProps {
   imageUploader: (file: File) => Promise<string>;
-  insertImage: (url: string) => void;
+  quillObj: any;
+  closeModal: () => void;
 }
 
 const onDefault = () => {
@@ -15,7 +16,14 @@ const onUploading = () => {
   return <div className="uploading">Uploading...</div>;
 };
 
-export const Modal = ({ imageUploader, insertImage }: ModalProps) => {
+export const Modal = ({ imageUploader, quillObj, closeModal }: ModalProps) => {
+  const insertImage = (url: string) => {
+    quillObj.current.getEditor().focus();
+    const range = quillObj.current.getEditor().getSelection();
+    quillObj.current.getEditor().insertEmbed(range.index, "image", url);
+    closeModal();
+  };
+
   return (
     <div className="backdrop">
       <div className="foreground">

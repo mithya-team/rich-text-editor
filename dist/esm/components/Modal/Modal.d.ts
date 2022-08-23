@@ -2,6 +2,7 @@
 import "./Modal.css";
 export interface ModalProps {
     imageUploader: (file: File) => Promise<string>;
-    insertImage: (url: string) => void;
+    quillObj: any;
+    closeModal: () => void;
 }
-export declare const Modal: ({ imageUploader, insertImage }: ModalProps) => JSX.Element;
+export declare const Modal: ({ imageUploader, quillObj, closeModal }: ModalProps) => JSX.Element;

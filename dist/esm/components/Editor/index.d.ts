@@ -1,2 +1,2 @@
 export * from "./Editor";
-export * from "./ModuleBuilder";
+export * from "./ContainerBuilder";
