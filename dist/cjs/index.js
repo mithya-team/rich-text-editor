@@ -2956,7 +2956,7 @@ const Modal = ({ imageUploader, quillObj, closeModal }) => {
             React__default["default"].createElement(UploadZone, { onDefault: onDefault, onUploading: onUploading, uploadTo: imageUploader, onFinish: insertImage }))));
 };
 
-var css_248z = ".main {\n  display: grid;\n  place-items: center;\n}\n.ql-addImage {\n  background-image: url(\"./add-image.svg\") !important;\n  background-repeat: no-repeat !important;\n}\n";
+var css_248z = ".main {\r\n  display: grid;\r\n  place-items: center;\r\n}\r\n.ql-addImage {\r\n  background-image: url(\"./add-image.svg\") !important;\r\n  background-repeat: no-repeat !important;\r\n}\r\n";
 styleInject(css_248z);
 
 exports.toolbarOptions = void 0;
@@ -3029,7 +3029,7 @@ const buildContainer = (options) => {
     return container;
 };
 
-const Editor = ({ quillProps, imageUploader, options }) => {
+const Editor = ({ quillProps, imageUploader, options, onChange, }) => {
     const [showModal, setShowModal] = React.useState(false);
     const openModal = () => setShowModal(true);
     const closeModal = () => setShowModal(false);
@@ -3037,17 +3037,24 @@ const Editor = ({ quillProps, imageUploader, options }) => {
     const modules = React.useMemo(() => {
         return {
             toolbar: {
-                container: buildContainer(options),
+                container: buildContainer(options == null ? undefined : options),
                 handlers: imageUploader ? { image: openModal } : {},
             },
         };
     }, [options, imageUploader]);
     return (React__default["default"].createElement("div", { className: "main" },
         React__default["default"].createElement("div", null,
-            React__default["default"].createElement(ReactQuill__default["default"], Object.assign({ modules: modules }, quillProps, { ref: quillObj })),
+            React__default["default"].createElement(ReactQuill__default["default"], Object.assign({ modules: modules }, quillProps, { ref: quillObj, onChange: onChange })),
             imageUploader && showModal && (React__default["default"].createElement(Modal, { imageUploader: imageUploader, quillObj: quillObj, closeModal: closeModal })))));
 };
 
+const Display = ({ delta }) => {
+    return React__default["default"].createElement(React__default["default"].Fragment, null,
+        "hi bhai ",
+        JSON.stringify(delta));
+};
+
+exports.Display = Display;
 exports.Editor = Editor;
 exports.buildContainer = buildContainer;
 //# sourceMappingURL=index.js.map

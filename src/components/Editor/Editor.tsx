@@ -6,12 +6,18 @@ import "./Editor.css";
 import { buildContainer, toolbarOptions } from "./ContainerBuilder";
 
 export interface EditorProps {
-  quillProps: any | undefined;
-  imageUploader: ((file: File) => Promise<string>) | undefined;
-  options: toolbarOptions[] | undefined;
+  quillProps: any | undefined | null;
+  imageUploader: ((file: File) => Promise<string>) | undefined | null;
+  options: toolbarOptions[] | undefined | null;
+  onChange: any | undefined;
 }
 
-export const Editor = ({ quillProps, imageUploader, options }: EditorProps) => {
+export const Editor = ({
+  quillProps,
+  imageUploader,
+  options,
+  onChange,
+}: EditorProps) => {
   const [showModal, setShowModal] = useState(false);
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
@@ -20,7 +26,7 @@ export const Editor = ({ quillProps, imageUploader, options }: EditorProps) => {
   const modules = useMemo(() => {
     return {
       toolbar: {
-        container: buildContainer(options),
+        container: buildContainer(options == null ? undefined : options),
         handlers: imageUploader ? { image: openModal } : {},
       },
     };
@@ -29,7 +35,12 @@ export const Editor = ({ quillProps, imageUploader, options }: EditorProps) => {
   return (
     <div className="main">
       <div>
-        <ReactQuill modules={modules} {...quillProps} ref={quillObj} />
+        <ReactQuill
+          modules={modules}
+          {...quillProps}
+          ref={quillObj}
+          onChange={onChange}
+        />
 
         {imageUploader && showModal && (
           <Modal

@@ -2947,7 +2947,7 @@ const Modal = ({ imageUploader, quillObj, closeModal }) => {
             React.createElement(UploadZone, { onDefault: onDefault, onUploading: onUploading, uploadTo: imageUploader, onFinish: insertImage }))));
 };
 
-var css_248z = ".main {\n  display: grid;\n  place-items: center;\n}\n.ql-addImage {\n  background-image: url(\"./add-image.svg\") !important;\n  background-repeat: no-repeat !important;\n}\n";
+var css_248z = ".main {\r\n  display: grid;\r\n  place-items: center;\r\n}\r\n.ql-addImage {\r\n  background-image: url(\"./add-image.svg\") !important;\r\n  background-repeat: no-repeat !important;\r\n}\r\n";
 styleInject(css_248z);
 
 var toolbarOptions;
@@ -3020,7 +3020,7 @@ const buildContainer = (options) => {
     return container;
 };
 
-const Editor = ({ quillProps, imageUploader, options }) => {
+const Editor = ({ quillProps, imageUploader, options, onChange, }) => {
     const [showModal, setShowModal] = useState(false);
     const openModal = () => setShowModal(true);
     const closeModal = () => setShowModal(false);
@@ -3028,16 +3028,22 @@ const Editor = ({ quillProps, imageUploader, options }) => {
     const modules = useMemo(() => {
         return {
             toolbar: {
-                container: buildContainer(options),
+                container: buildContainer(options == null ? undefined : options),
                 handlers: imageUploader ? { image: openModal } : {},
             },
         };
     }, [options, imageUploader]);
     return (React.createElement("div", { className: "main" },
         React.createElement("div", null,
-            React.createElement(ReactQuill, Object.assign({ modules: modules }, quillProps, { ref: quillObj })),
+            React.createElement(ReactQuill, Object.assign({ modules: modules }, quillProps, { ref: quillObj, onChange: onChange })),
             imageUploader && showModal && (React.createElement(Modal, { imageUploader: imageUploader, quillObj: quillObj, closeModal: closeModal })))));
 };
 
-export { Editor, buildContainer, toolbarOptions };
+const Display = ({ delta }) => {
+    return React.createElement(React.Fragment, null,
+        "hi bhai ",
+        JSON.stringify(delta));
+};
+
+export { Display, Editor, buildContainer, toolbarOptions };
 //# sourceMappingURL=index.js.map

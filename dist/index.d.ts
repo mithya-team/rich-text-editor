@@ -14,10 +14,16 @@ declare enum toolbarOptions {
 declare const buildContainer: (options: toolbarOptions[] | undefined) => any;
 
 interface EditorProps {
-    quillProps: any | undefined;
-    imageUploader: ((file: File) => Promise<string>) | undefined;
-    options: toolbarOptions[] | undefined;
+    quillProps: any | undefined | null;
+    imageUploader: ((file: File) => Promise<string>) | undefined | null;
+    options: toolbarOptions[] | undefined | null;
+    onChange: any | undefined;
 }
-declare const Editor: ({ quillProps, imageUploader, options }: EditorProps) => JSX.Element;
+declare const Editor: ({ quillProps, imageUploader, options, onChange, }: EditorProps) => JSX.Element;
 
-export { Editor, EditorProps, buildContainer, toolbarOptions };
+interface DisplayProps {
+    delta: any;
+}
+declare const Display: ({ delta }: DisplayProps) => JSX.Element;
+
+export { Display, DisplayProps, Editor, EditorProps, buildContainer, toolbarOptions };
