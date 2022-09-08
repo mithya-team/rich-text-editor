@@ -1,5 +1,6 @@
 import React$2, { forwardRef, useImperativeHandle, Fragment, useMemo, useRef, useReducer, useEffect, useCallback, useState } from 'react';
-import ReactQuill from 'react-quill';
+import ReactQuill, { Quill } from 'react-quill';
+import ReactDOM from 'react-dom';
 
 function styleInject(css, ref) {
   if ( ref === void 0 ) ref = {};
@@ -3022,6 +3023,37 @@ const buildContainer = (options) => {
     return container;
 };
 
+const EmbedComponent = (props) => {
+    const [count, setCount] = useState(0);
+    return (React$2.createElement(React$2.Fragment, null,
+        React$2.createElement("div", null,
+            "Custom component message:",
+            props.msg,
+            " "),
+        React$2.createElement("div", null, count),
+        React$2.createElement("button", { onClick: () => setCount((c) => c + 1) }, "+")));
+};
+
+const BlockEmbed = Quill.import("blots/block/embed");
+class Embed extends BlockEmbed {
+    static create(val) {
+        const node = super.create();
+        ReactDOM.render(React$2.createElement(EmbedComponent, { msg: val.msg }), node);
+        //createRoot(<PollComponent msg={val.msg} /> , node);
+        //root.render(<PollComponent />);
+        //render(<PollComponent />, node);
+        node.contentEditable = false;
+        return node;
+    }
+}
+Embed.blotName = "customembed";
+Embed.tagName = "div";
+Embed.className = `ql-custom`;
+Embed.ref = {};
+
+Quill.register({
+    "formats/customembed": Embed,
+}, true);
 const Editor = ({ quillProps, imageUploader, options, onChange, }) => {
     const [showModal, setShowModal] = useState(false);
     const openModal = () => setShowModal(true);
@@ -3035,10 +3067,19 @@ const Editor = ({ quillProps, imageUploader, options, onChange, }) => {
             },
         };
     }, [options, imageUploader]);
+    const addEmbed = () => {
+        const range = quillObj.current.getEditor().getSelection(true);
+        const type = "customembed";
+        const data = {
+            msg: "hello",
+        };
+        quillObj.current.getEditor().insertEmbed(range.index, type, data);
+    };
     return (React$2.createElement("div", { className: "main" },
         React$2.createElement("div", null,
             React$2.createElement(ReactQuill, Object.assign({ modules: modules }, quillProps, { ref: quillObj, onChange: onChange })),
-            imageUploader && showModal && (React$2.createElement(Modal, { imageUploader: imageUploader, quillObj: quillObj, closeModal: closeModal })))));
+            imageUploader && showModal && (React$2.createElement(Modal, { imageUploader: imageUploader, quillObj: quillObj, closeModal: closeModal })),
+            React$2.createElement("button", { onClick: addEmbed }, "Add Component"))));
 };
 
 var main = {};
@@ -13766,9 +13807,29 @@ var parse = htmlReactParser.exports;
 
 const Display = ({ delta }) => {
     const cfg = {};
-    const converter = new QuillDeltaToHtmlConverter(delta["ops"], cfg);
-    const html = converter.convert();
-    return React$2.createElement("div", { className: "cover" }, parse(html));
+    if (!delta.hasOwnProperty("ops"))
+        return React$2.createElement(React$2.Fragment, null, "hiiii");
+    const arr = delta["ops"].map((op, key) => {
+        if (op.insert.hasOwnProperty("customembed"))
+            return React$2.createElement(EmbedComponent, { msg: "testing" });
+        else {
+            const converter = new QuillDeltaToHtmlConverter([delta["ops"][key]], cfg);
+            const html = converter.convert();
+            return parse(html);
+        }
+    });
+    console.log(arr);
+    // converter.renderCustomWith((customOp, contextOp) => {
+    //   if (customOp.insert.type === "customembed") {
+    //     return "Custom blot goes here";
+    //   } else {
+    //     return "Unmanaged custom blot!";
+    //   }
+    // });
+    // const html = converter.convert();
+    return React$2.createElement("div", { className: "cover" },
+        "hiiii",
+        arr);
 };
 
 export { Display, Editor, buildContainer, toolbarOptions };

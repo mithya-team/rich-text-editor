@@ -1,9 +1,10 @@
 import React, { useMemo, useRef, useState } from "react";
-import ReactQuill from "react-quill";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { Modal } from "../Modal";
 import "./Editor.css";
 import { buildContainer, toolbarOptions } from "./ContainerBuilder";
+import { Embed } from "../Embed";
 
 export interface EditorProps {
   quillProps: any | undefined | null;
@@ -11,6 +12,13 @@ export interface EditorProps {
   options: toolbarOptions[] | undefined | null;
   onChange: any | undefined;
 }
+
+Quill.register(
+  {
+    "formats/customembed": Embed,
+  },
+  true
+);
 
 export const Editor = ({
   quillProps,
@@ -32,6 +40,15 @@ export const Editor = ({
     };
   }, [options, imageUploader]);
 
+  const addEmbed = () => {
+    const range = quillObj.current.getEditor().getSelection(true);
+    const type = "customembed";
+    const data = {
+      msg: "hello",
+    };
+    quillObj.current.getEditor().insertEmbed(range.index, type, data);
+  };
+
   return (
     <div className="main">
       <div>
@@ -49,6 +66,8 @@ export const Editor = ({
             closeModal={closeModal}
           />
         )}
+
+        <button onClick={addEmbed}>Add Component</button>
       </div>
     </div>
   );
