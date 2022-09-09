@@ -1,9 +1,9 @@
-import React, { useMemo } from "react";
+import React, { ReactNode, useMemo } from "react";
 import { chunkOutRenderString } from "../../utils";
 
 interface RendererProps<Delta = undefined> {
   renderString: string;
-  renderer?: (props: Delta) => JSX.Element;
+  renderer?: (props: Delta) => ReactNode;
   separators?: { start: string; end: string };
   className?: string;
   couldHaveChunks?: boolean;
