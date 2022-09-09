@@ -4,13 +4,11 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var React$2 = require('react');
 var ReactQuill = require('react-quill');
-var ReactDOM = require('react-dom');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 var React__default = /*#__PURE__*/_interopDefaultLegacy(React$2);
 var ReactQuill__default = /*#__PURE__*/_interopDefaultLegacy(ReactQuill);
-var ReactDOM__default = /*#__PURE__*/_interopDefaultLegacy(ReactDOM);
 
 function styleInject(css, ref) {
   if ( ref === void 0 ) ref = {};
@@ -2960,7 +2958,7 @@ const Modal = ({ imageUploader, quillObj, closeModal }) => {
             React__default["default"].createElement(UploadZone, { onDefault: onDefault, onUploading: onUploading, uploadTo: imageUploader, onFinish: insertImage }))));
 };
 
-var css_248z = ".main {\r\n  display: grid;\r\n  place-items: center;\r\n}\r\n.ql-addImage {\r\n  background-image: url(\"./add-image.svg\") !important;\r\n  background-repeat: no-repeat !important;\r\n}\r\n";
+var css_248z = ".main {\r\n  display: grid;\r\n  place-items: center;\r\n}\r\n.ql-addImage {\r\n  background-image: url(\"./add-image.svg\") !important;\r\n  background-repeat: no-repeat !important;\r\n}\r\n.add-embed {\r\n  border-color: black;\r\n  border-radius: 4px;\r\n}\r\n.ql-customembed:before {\r\n  content: \"+ Add embed\";\r\n  width: 10em;\r\n}\r\n.ql-customembed {\r\n  color: #444 !important;\r\n  font-size: 14px !important;\r\n  font-weight: 500 !important;\r\n  border: 1px solid transparent !important;\r\n  width: 7em !important;\r\n  font-family: Arial, Helvetica, sans-serif !important;\r\n}\r\n";
 styleInject(css_248z);
 
 exports.toolbarOptions = void 0;
@@ -3030,28 +3028,15 @@ const buildContainer = (options) => {
                 break;
         }
     });
+    container = [...container, ["customembed"]];
     return container;
-};
-
-const EmbedComponent = (props) => {
-    const [count, setCount] = React$2.useState(0);
-    return (React__default["default"].createElement(React__default["default"].Fragment, null,
-        React__default["default"].createElement("div", null,
-            "Custom component message:",
-            props.msg,
-            " "),
-        React__default["default"].createElement("div", null, count),
-        React__default["default"].createElement("button", { onClick: () => setCount((c) => c + 1) }, "+")));
 };
 
 const BlockEmbed = ReactQuill.Quill.import("blots/block/embed");
 class Embed extends BlockEmbed {
     static create(val) {
         const node = super.create();
-        ReactDOM__default["default"].render(React__default["default"].createElement(EmbedComponent, { msg: val.msg }), node);
-        //createRoot(<PollComponent msg={val.msg} /> , node);
-        //root.render(<PollComponent />);
-        //render(<PollComponent />, node);
+        node.innerHTML = "custom embed goes here";
         node.contentEditable = false;
         return node;
     }
@@ -3069,14 +3054,6 @@ const Editor = ({ quillProps, imageUploader, options, onChange, }) => {
     const openModal = () => setShowModal(true);
     const closeModal = () => setShowModal(false);
     const quillObj = React$2.useRef();
-    const modules = React$2.useMemo(() => {
-        return {
-            toolbar: {
-                container: buildContainer(options == null ? undefined : options),
-                handlers: imageUploader ? { image: openModal } : {},
-            },
-        };
-    }, [options, imageUploader]);
     const addEmbed = () => {
         const range = quillObj.current.getEditor().getSelection(true);
         const type = "customembed";
@@ -3085,11 +3062,20 @@ const Editor = ({ quillProps, imageUploader, options, onChange, }) => {
         };
         quillObj.current.getEditor().insertEmbed(range.index, type, data);
     };
+    const modules = React$2.useMemo(() => {
+        return {
+            toolbar: {
+                container: buildContainer(options == null ? undefined : options),
+                handlers: imageUploader
+                    ? { image: openModal, customembed: addEmbed }
+                    : { customembed: addEmbed },
+            },
+        };
+    }, [options, imageUploader]);
     return (React__default["default"].createElement("div", { className: "main" },
         React__default["default"].createElement("div", null,
             React__default["default"].createElement(ReactQuill__default["default"], Object.assign({ modules: modules }, quillProps, { ref: quillObj, onChange: onChange })),
-            imageUploader && showModal && (React__default["default"].createElement(Modal, { imageUploader: imageUploader, quillObj: quillObj, closeModal: closeModal })),
-            React__default["default"].createElement("button", { onClick: addEmbed }, "Add Component"))));
+            imageUploader && showModal && (React__default["default"].createElement(Modal, { imageUploader: imageUploader, quillObj: quillObj, closeModal: closeModal })))));
 };
 
 var main = {};
@@ -13815,10 +13801,26 @@ htmlReactParser.exports.Element;
 
 var parse = htmlReactParser.exports;
 
+const EmbedComponent = (props) => {
+    const [count, setCount] = React$2.useState(0);
+    return (React__default["default"].createElement("div", { style: {
+            padding: "4px",
+            backgroundColor: "#F5F5F5",
+            width: "33%",
+            borderRadius: "7px",
+        } },
+        React__default["default"].createElement("div", null,
+            "Custom component message:",
+            props.msg,
+            " "),
+        React__default["default"].createElement("div", null, count),
+        React__default["default"].createElement("button", { onClick: () => setCount((c) => c + 1) }, "+")));
+};
+
 const Display = ({ delta }) => {
     const cfg = {};
     if (!delta.hasOwnProperty("ops"))
-        return React__default["default"].createElement(React__default["default"].Fragment, null, "hiiii");
+        return React__default["default"].createElement(React__default["default"].Fragment, null);
     const arr = delta["ops"].map((op, key) => {
         if (op.insert.hasOwnProperty("customembed"))
             return React__default["default"].createElement(EmbedComponent, { msg: "testing" });
@@ -13828,18 +13830,7 @@ const Display = ({ delta }) => {
             return parse(html);
         }
     });
-    console.log(arr);
-    // converter.renderCustomWith((customOp, contextOp) => {
-    //   if (customOp.insert.type === "customembed") {
-    //     return "Custom blot goes here";
-    //   } else {
-    //     return "Unmanaged custom blot!";
-    //   }
-    // });
-    // const html = converter.convert();
-    return React__default["default"].createElement("div", { className: "cover" },
-        "hiiii",
-        arr);
+    return React__default["default"].createElement("div", { className: "cover" }, arr);
 };
 
 exports.Display = Display;

@@ -31,15 +31,6 @@ export const Editor = ({
   const closeModal = () => setShowModal(false);
   const quillObj: any = useRef();
 
-  const modules = useMemo(() => {
-    return {
-      toolbar: {
-        container: buildContainer(options == null ? undefined : options),
-        handlers: imageUploader ? { image: openModal } : {},
-      },
-    };
-  }, [options, imageUploader]);
-
   const addEmbed = () => {
     const range = quillObj.current.getEditor().getSelection(true);
     const type = "customembed";
@@ -48,6 +39,17 @@ export const Editor = ({
     };
     quillObj.current.getEditor().insertEmbed(range.index, type, data);
   };
+
+  const modules = useMemo(() => {
+    return {
+      toolbar: {
+        container: buildContainer(options == null ? undefined : options),
+        handlers: imageUploader
+          ? { image: openModal, customembed: addEmbed }
+          : { customembed: addEmbed },
+      },
+    };
+  }, [options, imageUploader]);
 
   return (
     <div className="main">
@@ -66,8 +68,6 @@ export const Editor = ({
             closeModal={closeModal}
           />
         )}
-
-        <button onClick={addEmbed}>Add Component</button>
       </div>
     </div>
   );

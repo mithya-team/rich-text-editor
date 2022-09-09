@@ -1,6 +1,5 @@
 import React$2, { forwardRef, useImperativeHandle, Fragment, useMemo, useRef, useReducer, useEffect, useCallback, useState } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
-import ReactDOM from 'react-dom';
 
 function styleInject(css, ref) {
   if ( ref === void 0 ) ref = {};
@@ -2950,7 +2949,7 @@ const Modal = ({ imageUploader, quillObj, closeModal }) => {
             React$2.createElement(UploadZone, { onDefault: onDefault, onUploading: onUploading, uploadTo: imageUploader, onFinish: insertImage }))));
 };
 
-var css_248z = ".main {\r\n  display: grid;\r\n  place-items: center;\r\n}\r\n.ql-addImage {\r\n  background-image: url(\"./add-image.svg\") !important;\r\n  background-repeat: no-repeat !important;\r\n}\r\n";
+var css_248z = ".main {\r\n  display: grid;\r\n  place-items: center;\r\n}\r\n.ql-addImage {\r\n  background-image: url(\"./add-image.svg\") !important;\r\n  background-repeat: no-repeat !important;\r\n}\r\n.add-embed {\r\n  border-color: black;\r\n  border-radius: 4px;\r\n}\r\n.ql-customembed:before {\r\n  content: \"+ Add embed\";\r\n  width: 10em;\r\n}\r\n.ql-customembed {\r\n  color: #444 !important;\r\n  font-size: 14px !important;\r\n  font-weight: 500 !important;\r\n  border: 1px solid transparent !important;\r\n  width: 7em !important;\r\n  font-family: Arial, Helvetica, sans-serif !important;\r\n}\r\n";
 styleInject(css_248z);
 
 var toolbarOptions;
@@ -3020,28 +3019,15 @@ const buildContainer = (options) => {
                 break;
         }
     });
+    container = [...container, ["customembed"]];
     return container;
-};
-
-const EmbedComponent = (props) => {
-    const [count, setCount] = useState(0);
-    return (React$2.createElement(React$2.Fragment, null,
-        React$2.createElement("div", null,
-            "Custom component message:",
-            props.msg,
-            " "),
-        React$2.createElement("div", null, count),
-        React$2.createElement("button", { onClick: () => setCount((c) => c + 1) }, "+")));
 };
 
 const BlockEmbed = Quill.import("blots/block/embed");
 class Embed extends BlockEmbed {
     static create(val) {
         const node = super.create();
-        ReactDOM.render(React$2.createElement(EmbedComponent, { msg: val.msg }), node);
-        //createRoot(<PollComponent msg={val.msg} /> , node);
-        //root.render(<PollComponent />);
-        //render(<PollComponent />, node);
+        node.innerHTML = "custom embed goes here";
         node.contentEditable = false;
         return node;
     }
@@ -3059,14 +3045,6 @@ const Editor = ({ quillProps, imageUploader, options, onChange, }) => {
     const openModal = () => setShowModal(true);
     const closeModal = () => setShowModal(false);
     const quillObj = useRef();
-    const modules = useMemo(() => {
-        return {
-            toolbar: {
-                container: buildContainer(options == null ? undefined : options),
-                handlers: imageUploader ? { image: openModal } : {},
-            },
-        };
-    }, [options, imageUploader]);
     const addEmbed = () => {
         const range = quillObj.current.getEditor().getSelection(true);
         const type = "customembed";
@@ -3075,11 +3053,20 @@ const Editor = ({ quillProps, imageUploader, options, onChange, }) => {
         };
         quillObj.current.getEditor().insertEmbed(range.index, type, data);
     };
+    const modules = useMemo(() => {
+        return {
+            toolbar: {
+                container: buildContainer(options == null ? undefined : options),
+                handlers: imageUploader
+                    ? { image: openModal, customembed: addEmbed }
+                    : { customembed: addEmbed },
+            },
+        };
+    }, [options, imageUploader]);
     return (React$2.createElement("div", { className: "main" },
         React$2.createElement("div", null,
             React$2.createElement(ReactQuill, Object.assign({ modules: modules }, quillProps, { ref: quillObj, onChange: onChange })),
-            imageUploader && showModal && (React$2.createElement(Modal, { imageUploader: imageUploader, quillObj: quillObj, closeModal: closeModal })),
-            React$2.createElement("button", { onClick: addEmbed }, "Add Component"))));
+            imageUploader && showModal && (React$2.createElement(Modal, { imageUploader: imageUploader, quillObj: quillObj, closeModal: closeModal })))));
 };
 
 var main = {};
@@ -13805,10 +13792,26 @@ htmlReactParser.exports.Element;
 
 var parse = htmlReactParser.exports;
 
+const EmbedComponent = (props) => {
+    const [count, setCount] = useState(0);
+    return (React$2.createElement("div", { style: {
+            padding: "4px",
+            backgroundColor: "#F5F5F5",
+            width: "33%",
+            borderRadius: "7px",
+        } },
+        React$2.createElement("div", null,
+            "Custom component message:",
+            props.msg,
+            " "),
+        React$2.createElement("div", null, count),
+        React$2.createElement("button", { onClick: () => setCount((c) => c + 1) }, "+")));
+};
+
 const Display = ({ delta }) => {
     const cfg = {};
     if (!delta.hasOwnProperty("ops"))
-        return React$2.createElement(React$2.Fragment, null, "hiiii");
+        return React$2.createElement(React$2.Fragment, null);
     const arr = delta["ops"].map((op, key) => {
         if (op.insert.hasOwnProperty("customembed"))
             return React$2.createElement(EmbedComponent, { msg: "testing" });
@@ -13818,18 +13821,7 @@ const Display = ({ delta }) => {
             return parse(html);
         }
     });
-    console.log(arr);
-    // converter.renderCustomWith((customOp, contextOp) => {
-    //   if (customOp.insert.type === "customembed") {
-    //     return "Custom blot goes here";
-    //   } else {
-    //     return "Unmanaged custom blot!";
-    //   }
-    // });
-    // const html = converter.convert();
-    return React$2.createElement("div", { className: "cover" },
-        "hiiii",
-        arr);
+    return React$2.createElement("div", { className: "cover" }, arr);
 };
 
 export { Display, Editor, buildContainer, toolbarOptions };

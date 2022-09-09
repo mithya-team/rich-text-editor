@@ -66,6 +66,6 @@ export const buildContainer = (options: toolbarOptions[] | undefined) => {
         break;
     }
   });
-
+  container = [...container, ["customembed"]];
   return container;
 };

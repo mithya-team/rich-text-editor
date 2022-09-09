@@ -9,7 +9,7 @@ export interface DisplayProps {
 export const Display = ({ delta }: DisplayProps) => {
   const cfg = {};
 
-  if (!delta.hasOwnProperty("ops")) return <>hiiii</>;
+  if (!delta.hasOwnProperty("ops")) return <></>;
   const arr = delta["ops"].map((op: any, key: any) => {
     if (op.insert.hasOwnProperty("customembed"))
       return <EmbedComponent msg={"testing"} />;

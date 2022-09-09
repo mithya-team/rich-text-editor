@@ -13,13 +13,8 @@ export class Embed extends BlockEmbed {
 
   static create(val: any) {
     const node = super.create();
-
-    ReactDOM.render(<EmbedComponent msg={val.msg} />, node);
-    //createRoot(<PollComponent msg={val.msg} /> , node);
-    //root.render(<PollComponent />);
-    //render(<PollComponent />, node);
+    node.innerHTML = "custom embed goes here";
     node.contentEditable = false;
-
     return node;
   }
 }
