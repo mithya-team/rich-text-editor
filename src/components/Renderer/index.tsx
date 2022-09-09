@@ -1,24 +1,24 @@
 import React, { ReactNode, useMemo } from "react";
 import { chunkOutRenderString } from "../../utils";
 
-interface RendererProps<Delta = undefined> {
+interface RendererProps<CustomPropTypes = undefined> {
   renderString: string;
-  renderer?: (props: Delta) => ReactNode;
+  customComponentRenderer?: (props: CustomPropTypes) => ReactNode;
   separators?: { start: string; end: string };
   className?: string;
-  couldHaveChunks?: boolean;
+  couldHaveEmbeds?: boolean;
 }
 
-function Renderer<DeltaType>({
+function Renderer<CustomProps>({
   renderString,
-  renderer,
+  customComponentRenderer,
   separators,
-  couldHaveChunks = true,
+  couldHaveEmbeds = true,
   className,
-}: RendererProps<DeltaType>) {
+}: RendererProps<CustomProps>) {
   // Separate out plain html strings from object data.
-  const chunkedOutRenderString = couldHaveChunks
-    ? chunkOutRenderString<DeltaType>(
+  const chunkedOutRenderString = couldHaveEmbeds
+    ? chunkOutRenderString<CustomProps>(
         renderString,
         separators?.start,
         separators?.end
@@ -30,13 +30,13 @@ function Renderer<DeltaType>({
       if (typeof chunk === "string") {
         return <div dangerouslySetInnerHTML={{ __html: chunk }} />;
       }
-      if (renderer) return renderer(chunk);
+      if (customComponentRenderer) return customComponentRenderer(chunk);
       else {
         console.error("No renderer given but renderString has chunks.");
         return null;
       }
     });
-  }, [chunkedOutRenderString, renderer]);
+  }, [chunkedOutRenderString, customComponentRenderer]);
 
   return <div className={className}>{elements}</div>;
 }

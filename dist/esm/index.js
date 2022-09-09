@@ -2926,7 +2926,7 @@ const UploadZone = ({ onDefault, onUploading, onFinish, uploadTo, }) => {
         return onUploading();
 };
 
-var css_248z$1 = ".backdrop {\r\n  background-color: rgba(0, 0, 0, 0.7);\r\n  height: 100%;\r\n  width: 100%;\r\n  position: fixed;\r\n  top: 0;\r\n  left: 0;\r\n}\r\n.foreground {\r\n  position: fixed;\r\n  top: 50%;\r\n  left: 50%;\r\n  height: 33%;\r\n  width: 33%;\r\n  background-color: whitesmoke;\r\n  transform: translate(-50%, -50%);\r\n  border-radius: 15px;\r\n  padding: 1rem;\r\n  color: black;\r\n}\r\n.dropzone {\r\n  color: black !important;\r\n  padding: 1rem;\r\n  border: 1px black dashed;\r\n}\r\n.uploading {\r\n  position: fixed;\r\n  top: 0;\r\n  left: 0;\r\n  height: 100%;\r\n  width: 100%;\r\n  background-color: rgb(4, 155, 4);\r\n  color: white;\r\n  border-radius: 15px;\r\n  padding: 1rem;\r\n  z-index: 3;\r\n  font-size: xx-large;\r\n}\r\n";
+var css_248z$1 = ".backdrop {\n  background-color: rgba(0, 0, 0, 0.7);\n  height: 100%;\n  width: 100%;\n  position: fixed;\n  top: 0;\n  left: 0;\n}\n.foreground {\n  position: fixed;\n  top: 50%;\n  left: 50%;\n  height: 33%;\n  width: 33%;\n  background-color: whitesmoke;\n  transform: translate(-50%, -50%);\n  border-radius: 15px;\n  padding: 1rem;\n  color: black;\n}\n.dropzone {\n  color: black !important;\n  padding: 1rem;\n  border: 1px black dashed;\n}\n.uploading {\n  position: fixed;\n  top: 0;\n  left: 0;\n  height: 100%;\n  width: 100%;\n  background-color: rgb(4, 155, 4);\n  color: white;\n  border-radius: 15px;\n  padding: 1rem;\n  z-index: 3;\n  font-size: xx-large;\n}\n";
 styleInject(css_248z$1);
 
 const onDefault = () => {
