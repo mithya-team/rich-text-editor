@@ -22,7 +22,7 @@ export const buildContainer = (options: toolbarOptions[] | undefined) => {
       toolbarOptions.clear,
     ];
 
-  let container: any = [];
+  let container: Array<Array<string> | Object> = [];
   options.forEach((o) => {
     switch (o) {
       case toolbarOptions.fontStyle:

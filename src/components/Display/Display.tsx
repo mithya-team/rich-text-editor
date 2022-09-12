@@ -1,24 +1,66 @@
-import React from "react";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import parse from "html-react-parser";
 import { EmbedComponent } from "../Embed/EmbedComponent";
 
-export interface DisplayProps {
-  delta: any;
+import React, { ReactNode, useMemo } from "react";
+import { chunkOutRenderString } from "../../utils";
+
+interface RendererProps<CustomPropTypes = undefined> {
+  renderString: string;
+  customComponentRenderer?: React.FC;
+  separators?: { start: string; end: string };
+  className?: string;
+  couldHaveEmbeds?: boolean;
 }
-export const Display = ({ delta }: DisplayProps) => {
-  const cfg = {};
 
-  if (!delta.hasOwnProperty("ops")) return <></>;
-  const arr = delta["ops"].map((op: any, key: any) => {
-    if (op.insert.hasOwnProperty("customembed"))
-      return <EmbedComponent msg={"testing"} />;
-    else {
-      const converter = new QuillDeltaToHtmlConverter([delta["ops"][key]], cfg);
-      const html = converter.convert();
-      return parse(html);
-    }
-  });
+function Renderer<CustomProps>({
+  renderString,
+  customComponentRenderer,
+  separators,
+  couldHaveEmbeds = true,
+  className,
+}: RendererProps<CustomProps>) {
+  // Separate out plain html strings from object data.
 
-  return <div className="cover">{arr}</div>;
+  const chunkedOutRenderString = couldHaveEmbeds
+    ? chunkOutRenderString<CustomProps>(
+        renderString,
+        separators?.start,
+        separators?.end
+      )
+    : [renderString];
+
+  const elements = useMemo(() => {
+    console.log("elements rendered");
+    console.log(chunkedOutRenderString);
+    return chunkedOutRenderString.map((chunk) => {
+      if (typeof chunk === "string") {
+        return <div dangerouslySetInnerHTML={{ __html: chunk }} />;
+      }
+      if (customComponentRenderer) return customComponentRenderer(chunk);
+      else {
+        console.error("No renderer given but renderString has chunks.");
+        return null;
+      }
+    });
+  }, [chunkedOutRenderString, customComponentRenderer]);
+  return <div className={className}>{elements}</div>;
+}
+
+export default Renderer;
+
+export interface DisplayProps {
+  delta: string;
+  customComponent: React.FC | undefined;
+}
+export const Display = ({ delta, customComponent }: DisplayProps) => {
+  return (
+    <>
+      <Renderer
+        renderString={delta}
+        separators={{ start: "<x>", end: "</x>" }}
+        customComponentRenderer={customComponent}
+      />
+    </>
+  );
 };

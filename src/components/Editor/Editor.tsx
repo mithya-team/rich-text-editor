@@ -29,15 +29,13 @@ export const Editor = ({
   const [showModal, setShowModal] = useState(false);
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
-  const quillObj: any = useRef();
+  const quillObj = useRef<ReactQuill>();
 
   const addEmbed = () => {
+    if (!quillObj || !quillObj.current) return;
     const range = quillObj.current.getEditor().getSelection(true);
     const type = "customembed";
-    const data = {
-      msg: "hello",
-    };
-    quillObj.current.getEditor().insertEmbed(range.index, type, data);
+    quillObj.current.getEditor().insertEmbed(range.index, type, {});
   };
 
   const modules = useMemo(() => {

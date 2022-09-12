@@ -1,4 +1,6 @@
 /// <reference types="react" />
+import React from 'react';
+
 declare enum toolbarOptions {
     fontStyle = 0,
     quoteCode = 1,
@@ -11,7 +13,7 @@ declare enum toolbarOptions {
     clear = 8,
     image = 9
 }
-declare const buildContainer: (options: toolbarOptions[] | undefined) => any;
+declare const buildContainer: (options: toolbarOptions[] | undefined) => (Object | string[])[];
 
 interface EditorProps {
     quillProps: any | undefined | null;
@@ -22,8 +24,9 @@ interface EditorProps {
 declare const Editor: ({ quillProps, imageUploader, options, onChange, }: EditorProps) => JSX.Element;
 
 interface DisplayProps {
-    delta: any;
+    delta: string;
+    customComponent: React.FC | undefined;
 }
-declare const Display: ({ delta }: DisplayProps) => JSX.Element;
+declare const Display: ({ delta, customComponent }: DisplayProps) => JSX.Element;
 
 export { Display, DisplayProps, Editor, EditorProps, buildContainer, toolbarOptions };
