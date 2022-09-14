@@ -4,9 +4,12 @@
 
 export function chunkOutRenderString<Delta>(
   renderString: string,
-  separatorStart = "<x>",
-  separatorEnd = "</x>"
+  separators: { start: string; end: string }
 ): Array<Delta | string> {
+  const separatorStart = separators.start;
+  const separatorEnd = separators.end;
+  console.log(separators);
+  console.log(renderString);
   let chunks: Array<string | Delta> = [];
   let _renderString = renderString;
   while (_renderString.length) {

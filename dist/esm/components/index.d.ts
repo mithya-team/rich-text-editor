@@ -1,2 +1,2 @@
 export * from "./Editor";
-export * from "./Display";
+export * from "./Renderer";

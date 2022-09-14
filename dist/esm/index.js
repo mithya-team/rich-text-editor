@@ -3033,10 +3033,14 @@ Embed.blotName = "customembed";
 Embed.tagName = "x";
 Embed.ref = {};
 
-Quill.register({
-    "formats/customembed": Embed,
-}, true);
-const Editor = ({ quillProps, imageUploader, options, onChange, }) => {
+const Editor = ({ quillProps = null, imageUploader = null, options = null, customTag = "default", onChange, }) => {
+    var _a;
+    Quill.register({
+        "formats/customembed": (_a = class NewEmbed extends Embed {
+            },
+            _a.tagName = customTag,
+            _a),
+    }, true);
     const [showModal, setShowModal] = useState(false);
     const openModal = () => setShowModal(true);
     const closeModal = () => setShowModal(false);
@@ -3046,7 +3050,9 @@ const Editor = ({ quillProps, imageUploader, options, onChange, }) => {
             return;
         const range = quillObj.current.getEditor().getSelection(true);
         const type = "customembed";
-        quillObj.current.getEditor().insertEmbed(range.index, type, {});
+        quillObj.current
+            .getEditor()
+            .insertEmbed(range.index, type, { tag: customTag });
     };
     const modules = useMemo(() => {
         return {
@@ -3067,7 +3073,11 @@ const Editor = ({ quillProps, imageUploader, options, onChange, }) => {
 /**
  * Separates out html strings and json object containing props for renderer.
  */
-function chunkOutRenderString(renderString, separatorStart = "<x>", separatorEnd = "</x>") {
+function chunkOutRenderString(renderString, separators) {
+    const separatorStart = separators.start;
+    const separatorEnd = separators.end;
+    console.log(separators);
+    console.log(renderString);
     let chunks = [];
     let _renderString = renderString;
     while (_renderString.length) {
@@ -3099,32 +3109,29 @@ function chunkOutRenderString(renderString, separatorStart = "<x>", separatorEnd
     return chunks.filter((item) => !!item); // Only removes empty strings. Not empty objects. This is on purpose in case there is a react component that doesn't need any props.
 }
 
-function Renderer({ renderString, customComponentRenderer, separators, couldHaveEmbeds = true, className, }) {
-    // Separate out plain html strings from object data.
+const Renderer = ({ renderString, customComponent, customTag, className, couldHaveEmbeds = true, }) => {
+    const separators = {
+        start: `<${customTag}>`,
+        end: `</${customTag}>`,
+    };
     const chunkedOutRenderString = couldHaveEmbeds
-        ? chunkOutRenderString(renderString, separators === null || separators === void 0 ? void 0 : separators.start, separators === null || separators === void 0 ? void 0 : separators.end)
+        ? chunkOutRenderString(renderString, separators)
         : [renderString];
     const elements = useMemo(() => {
-        console.log("elements rendered");
-        console.log(chunkedOutRenderString);
         return chunkedOutRenderString.map((chunk) => {
             if (typeof chunk === "string") {
                 return React.createElement("div", { dangerouslySetInnerHTML: { __html: chunk } });
             }
-            if (customComponentRenderer)
-                return customComponentRenderer(chunk);
+            if (customComponent)
+                return customComponent(chunk);
             else {
                 console.error("No renderer given but renderString has chunks.");
                 return null;
             }
         });
-    }, [chunkedOutRenderString, customComponentRenderer]);
+    }, [chunkedOutRenderString, customComponent]);
     return React.createElement("div", { className: className }, elements);
-}
-const Display = ({ delta, customComponent }) => {
-    return (React.createElement(React.Fragment, null,
-        React.createElement(Renderer, { renderString: delta, separators: { start: "<x>", end: "</x>" }, customComponentRenderer: customComponent })));
 };
 
-export { Display, Editor, buildContainer, toolbarOptions };
+export { Editor, Renderer, buildContainer, toolbarOptions };
 //# sourceMappingURL=index.js.map

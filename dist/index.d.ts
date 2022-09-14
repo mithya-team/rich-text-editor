@@ -19,14 +19,18 @@ interface EditorProps {
     quillProps: any | undefined | null;
     imageUploader: ((file: File) => Promise<string>) | undefined | null;
     options: toolbarOptions[] | undefined | null;
+    customTag: string;
     onChange: any | undefined;
 }
-declare const Editor: ({ quillProps, imageUploader, options, onChange, }: EditorProps) => JSX.Element;
+declare const Editor: ({ quillProps, imageUploader, options, customTag, onChange, }: EditorProps) => JSX.Element;
 
-interface DisplayProps {
-    delta: string;
-    customComponent: React.FC | undefined;
+interface RendererProps<CustomPropTypes = undefined> {
+    renderString: string;
+    customComponent?: React.FC;
+    className?: string;
+    couldHaveEmbeds?: boolean;
+    customTag?: string;
 }
-declare const Display: ({ delta, customComponent }: DisplayProps) => JSX.Element;
+declare const Renderer: ({ renderString, customComponent, customTag, className, couldHaveEmbeds, }: RendererProps) => JSX.Element;
 
-export { Display, DisplayProps, Editor, EditorProps, buildContainer, toolbarOptions };
+export { Editor, EditorProps, Renderer, buildContainer, toolbarOptions };

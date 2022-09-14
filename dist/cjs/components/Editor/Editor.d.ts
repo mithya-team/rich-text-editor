@@ -6,6 +6,7 @@ export interface EditorProps {
     quillProps: any | undefined | null;
     imageUploader: ((file: File) => Promise<string>) | undefined | null;
     options: toolbarOptions[] | undefined | null;
+    customTag: string;
     onChange: any | undefined;
 }
-export declare const Editor: ({ quillProps, imageUploader, options, onChange, }: EditorProps) => JSX.Element;
+export declare const Editor: ({ quillProps, imageUploader, options, customTag, onChange, }: EditorProps) => JSX.Element;
