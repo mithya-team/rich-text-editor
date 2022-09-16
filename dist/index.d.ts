@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import React from 'react';
+import { ReactNode } from 'react';
 
 declare enum toolbarOptions {
     fontStyle = 0,
@@ -26,7 +26,7 @@ declare const Editor: ({ quillProps, imageUploader, options, customTag, onChange
 
 interface RendererProps<CustomPropTypes = undefined> {
     renderString: string;
-    customComponent?: React.FC;
+    customComponent?: (props: CustomPropTypes) => ReactNode;
     className?: string;
     couldHaveEmbeds?: boolean;
     customTag?: string;

@@ -1,10 +1,10 @@
 import "react-quill/dist/quill.snow.css";
-import React, { useMemo } from "react";
+import React, { ReactNode, useMemo } from "react";
 import { chunkOutRenderString } from "../../utils";
 
 interface RendererProps<CustomPropTypes = undefined> {
   renderString: string;
-  customComponent?: React.FC;
+  customComponent?: (props: CustomPropTypes) => ReactNode;
   className?: string;
   couldHaveEmbeds?: boolean;
   customTag?: string;

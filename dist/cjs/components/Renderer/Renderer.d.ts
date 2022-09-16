@@ -1,8 +1,8 @@
 import "react-quill/dist/quill.snow.css";
-import React from "react";
+import { ReactNode } from "react";
 interface RendererProps<CustomPropTypes = undefined> {
     renderString: string;
-    customComponent?: React.FC;
+    customComponent?: (props: CustomPropTypes) => ReactNode;
     className?: string;
     couldHaveEmbeds?: boolean;
     customTag?: string;

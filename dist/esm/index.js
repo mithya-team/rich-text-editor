@@ -3076,8 +3076,6 @@ const Editor = ({ quillProps = null, imageUploader = null, options = null, custo
 function chunkOutRenderString(renderString, separators) {
     const separatorStart = separators.start;
     const separatorEnd = separators.end;
-    console.log(separators);
-    console.log(renderString);
     let chunks = [];
     let _renderString = renderString;
     while (_renderString.length) {

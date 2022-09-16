@@ -8,8 +8,7 @@ export function chunkOutRenderString<Delta>(
 ): Array<Delta | string> {
   const separatorStart = separators.start;
   const separatorEnd = separators.end;
-  console.log(separators);
-  console.log(renderString);
+
   let chunks: Array<string | Delta> = [];
   let _renderString = renderString;
   while (_renderString.length) {
