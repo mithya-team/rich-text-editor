@@ -2944,16 +2944,10 @@ const onDefault = () => {
 const onUploading = () => {
     return React__default["default"].createElement("div", { className: "uploading" }, "Uploading...");
 };
-const Modal = ({ imageUploader, quillObj, closeModal }) => {
-    const insertImage = (url) => {
-        quillObj.current.getEditor().focus();
-        const range = quillObj.current.getEditor().getSelection();
-        quillObj.current.getEditor().insertEmbed(range.index, "image", url);
-        closeModal();
-    };
+const Modal = ({ onFinish, imageUploader }) => {
     return (React__default["default"].createElement("div", { className: "backdrop" },
         React__default["default"].createElement("div", { className: "foreground" },
-            React__default["default"].createElement(UploadZone, { onDefault: onDefault, onUploading: onUploading, uploadTo: imageUploader, onFinish: insertImage }))));
+            React__default["default"].createElement(UploadZone, { onDefault: onDefault, onUploading: onUploading, uploadTo: imageUploader, onFinish: onFinish }))));
 };
 
 var css_248z = ".main {\r\n  display: grid;\r\n  place-items: center;\r\n}\r\n.ql-addImage {\r\n  background-image: url(\"./add-image.svg\") !important;\r\n  background-repeat: no-repeat !important;\r\n}\r\n.add-embed {\r\n  border-color: black;\r\n  border-radius: 4px;\r\n}\r\n.ql-customembed:before {\r\n  content: \"+ Add embed\";\r\n  width: 10em;\r\n}\r\n.ql-customembed {\r\n  color: #444 !important;\r\n  font-size: 14px !important;\r\n  font-weight: 500 !important;\r\n  border: 1px solid transparent !important;\r\n  width: 7em !important;\r\n  font-family: Arial, Helvetica, sans-serif !important;\r\n}\r\n";
@@ -3042,13 +3036,10 @@ Embed.blotName = "customembed";
 Embed.tagName = "x";
 Embed.ref = {};
 
-const buildHandler = (imageUploader, imageUploadHandler, addEmbed, openModal, openImageHandlerModal) => {
+const buildHandler = (imageUploader, imageUploadHandler, addEmbed, openImageHandlerModal) => {
     let handlers = { customembed: addEmbed };
-    if (imageUploadHandler) {
+    if (imageUploadHandler || imageUploader) {
         handlers = Object.assign(Object.assign({}, handlers), { image: openImageHandlerModal });
-    }
-    else if (imageUploader) {
-        handlers = Object.assign(Object.assign({}, handlers), { image: openModal });
     }
     return handlers;
 };
@@ -3061,13 +3052,10 @@ const Editor = ({ quillProps = null, imageUploader = null, ImageUploadHandler = 
             _a.tagName = customTag,
             _a),
     }, true);
-    const [showModal, setShowModal] = React.useState(false);
     const [showImageHandler, setShowImageHandler] = React.useState(false);
     const openImageHandlerModal = () => {
         setShowImageHandler(true);
     };
-    const openModal = () => setShowModal(true);
-    const closeModal = () => setShowModal(false);
     const quillObj = React.useRef();
     const insertImage = (url) => {
         if (!quillObj || !quillObj.current)
@@ -3089,15 +3077,15 @@ const Editor = ({ quillProps = null, imageUploader = null, ImageUploadHandler = 
         return {
             toolbar: {
                 container: buildContainer(options),
-                handlers: buildHandler(imageUploader, ImageUploadHandler, addEmbed, openModal, openImageHandlerModal),
+                handlers: buildHandler(imageUploader, ImageUploadHandler, addEmbed, openImageHandlerModal),
             },
         };
     }, [options, imageUploader]);
     return (React__default["default"].createElement("div", { className: "main" },
         React__default["default"].createElement("div", null,
             React__default["default"].createElement(ReactQuill__default["default"], Object.assign({ modules: modules }, quillProps, { ref: quillObj, onChange: onChange })),
-            ImageUploadHandler && showImageHandler && (React__default["default"].createElement(ImageUploadHandler, { onFinish: insertImage })),
-            imageUploader && showModal && (React__default["default"].createElement(Modal, { imageUploader: imageUploader, quillObj: quillObj, closeModal: closeModal })))));
+            showImageHandler &&
+                (ImageUploadHandler ? (React__default["default"].createElement(ImageUploadHandler, { onFinish: insertImage })) : (imageUploader && (React__default["default"].createElement(Modal, { imageUploader: imageUploader, onFinish: insertImage })))))));
 };
 
 /**

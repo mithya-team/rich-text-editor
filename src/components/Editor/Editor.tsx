@@ -33,13 +33,10 @@ export const Editor = ({
     true
   );
 
-  const [showModal, setShowModal] = useState(false);
   const [showImageHandler, setShowImageHandler] = useState(false);
   const openImageHandlerModal = () => {
     setShowImageHandler(true);
   };
-  const openModal = () => setShowModal(true);
-  const closeModal = () => setShowModal(false);
   const quillObj = useRef<ReactQuill>();
 
   const insertImage = (url: string) => {
@@ -66,7 +63,6 @@ export const Editor = ({
           imageUploader,
           ImageUploadHandler,
           addEmbed,
-          openModal,
           openImageHandlerModal
         ),
       },
@@ -82,18 +78,14 @@ export const Editor = ({
           ref={quillObj}
           onChange={onChange}
         />
-
-        {ImageUploadHandler && showImageHandler && (
-          <ImageUploadHandler onFinish={insertImage} />
-        )}
-
-        {imageUploader && showModal && (
-          <Modal
-            imageUploader={imageUploader}
-            quillObj={quillObj}
-            closeModal={closeModal}
-          />
-        )}
+        {showImageHandler &&
+          (ImageUploadHandler ? (
+            <ImageUploadHandler onFinish={insertImage} />
+          ) : (
+            imageUploader && (
+              <Modal imageUploader={imageUploader} onFinish={insertImage} />
+            )
+          ))}
       </div>
     </div>
   );

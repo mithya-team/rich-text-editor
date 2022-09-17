@@ -1,8 +1,6 @@
-/// <reference types="react" />
+import React from "react";
 import "./Modal.css";
-export interface ModalProps {
+export declare const Modal: React.FC<{
+    onFinish: (url: string) => void;
     imageUploader: (file: File) => Promise<string>;
-    quillObj: any;
-    closeModal: () => void;
-}
-export declare const Modal: ({ imageUploader, quillObj, closeModal }: ModalProps) => JSX.Element;
+}>;

@@ -5,7 +5,6 @@ export type buildHandler = (
     | ((props: { onFinish: (url: string) => void }) => ReactNode)
     | null,
   addEmbed: () => void,
-  openModal: () => void,
   openImageHandlerModal: () => void
 ) => Object;
 
@@ -13,15 +12,12 @@ export const buildHandler: buildHandler = (
   imageUploader,
   imageUploadHandler,
   addEmbed,
-  openModal,
   openImageHandlerModal
 ) => {
   let handlers: Object = { customembed: addEmbed };
 
-  if (imageUploadHandler) {
+  if (imageUploadHandler || imageUploader) {
     handlers = { ...handlers, image: openImageHandlerModal };
-  } else if (imageUploader) {
-    handlers = { ...handlers, image: openModal };
   }
 
   return handlers;
