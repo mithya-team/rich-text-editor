@@ -10,4 +10,4 @@ export declare enum toolbarOptions {
     clear = 8,
     image = 9
 }
-export declare const buildContainer: (options: toolbarOptions[] | undefined) => (Object | string[])[];
+export declare const buildContainer: (options: toolbarOptions[] | null) => (Object | string[])[];

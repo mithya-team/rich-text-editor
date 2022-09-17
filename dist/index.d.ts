@@ -1,5 +1,4 @@
-/// <reference types="react" />
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 declare enum toolbarOptions {
     fontStyle = 0,
@@ -13,16 +12,19 @@ declare enum toolbarOptions {
     clear = 8,
     image = 9
 }
-declare const buildContainer: (options: toolbarOptions[] | undefined) => (Object | string[])[];
+declare const buildContainer: (options: toolbarOptions[] | null) => (Object | string[])[];
 
 interface EditorProps {
-    quillProps: any | undefined | null;
+    quillProps?: any | null;
     imageUploader: ((file: File) => Promise<string>) | undefined | null;
+    ImageUploadHandler?: React.FC<{
+        onFinish: (url: string) => void;
+    }> | null;
     options: toolbarOptions[] | undefined | null;
     customTag: string;
     onChange: any | undefined;
 }
-declare const Editor: ({ quillProps, imageUploader, options, customTag, onChange, }: EditorProps) => JSX.Element;
+declare const Editor: ({ quillProps, imageUploader, ImageUploadHandler, options, customTag, onChange, }: EditorProps) => JSX.Element;
 
 interface RendererProps<CustomPropTypes = undefined> {
     renderString: string;
@@ -31,6 +33,6 @@ interface RendererProps<CustomPropTypes = undefined> {
     couldHaveEmbeds?: boolean;
     customTag?: string;
 }
-declare const Renderer: ({ renderString, customComponent, customTag, className, couldHaveEmbeds, }: RendererProps) => JSX.Element;
+declare function Renderer<CustomPropTypes>({ renderString, customComponent, customTag, className, couldHaveEmbeds, }: RendererProps<CustomPropTypes>): JSX.Element;
 
-export { Editor, EditorProps, Renderer, buildContainer, toolbarOptions };
+export { Editor, EditorProps, Renderer, RendererProps, buildContainer, toolbarOptions };

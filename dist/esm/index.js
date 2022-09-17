@@ -3033,7 +3033,18 @@ Embed.blotName = "customembed";
 Embed.tagName = "x";
 Embed.ref = {};
 
-const Editor = ({ quillProps = null, imageUploader = null, options = null, customTag = "default", onChange, }) => {
+const buildHandler = (imageUploader, imageUploadHandler, addEmbed, openModal, openImageHandlerModal) => {
+    let handlers = { customembed: addEmbed };
+    if (imageUploadHandler) {
+        handlers = Object.assign(Object.assign({}, handlers), { image: openImageHandlerModal });
+    }
+    else if (imageUploader) {
+        handlers = Object.assign(Object.assign({}, handlers), { image: openModal });
+    }
+    return handlers;
+};
+
+const Editor = ({ quillProps = null, imageUploader = null, ImageUploadHandler = null, options = null, customTag = "default", onChange, }) => {
     var _a;
     Quill.register({
         "formats/customembed": (_a = class NewEmbed extends Embed {
@@ -3042,9 +3053,20 @@ const Editor = ({ quillProps = null, imageUploader = null, options = null, custo
             _a),
     }, true);
     const [showModal, setShowModal] = useState(false);
+    const [showImageHandler, setShowImageHandler] = useState(false);
+    const openImageHandlerModal = () => {
+        setShowImageHandler(true);
+    };
     const openModal = () => setShowModal(true);
     const closeModal = () => setShowModal(false);
     const quillObj = useRef();
+    const insertImage = (url) => {
+        if (!quillObj || !quillObj.current)
+            return;
+        const range = quillObj.current.getEditor().getSelection(true);
+        quillObj.current.getEditor().insertEmbed(range.index, "image", url);
+        setShowImageHandler(false);
+    };
     const addEmbed = () => {
         if (!quillObj || !quillObj.current)
             return;
@@ -3057,16 +3079,15 @@ const Editor = ({ quillProps = null, imageUploader = null, options = null, custo
     const modules = useMemo(() => {
         return {
             toolbar: {
-                container: buildContainer(options == null ? undefined : options),
-                handlers: imageUploader
-                    ? { image: openModal, customembed: addEmbed }
-                    : { customembed: addEmbed },
+                container: buildContainer(options),
+                handlers: buildHandler(imageUploader, ImageUploadHandler, addEmbed, openModal, openImageHandlerModal),
             },
         };
     }, [options, imageUploader]);
     return (React.createElement("div", { className: "main" },
         React.createElement("div", null,
             React.createElement(ReactQuill, Object.assign({ modules: modules }, quillProps, { ref: quillObj, onChange: onChange })),
+            ImageUploadHandler && showImageHandler && (React.createElement(ImageUploadHandler, { onFinish: insertImage })),
             imageUploader && showModal && (React.createElement(Modal, { imageUploader: imageUploader, quillObj: quillObj, closeModal: closeModal })))));
 };
 
@@ -3107,7 +3128,7 @@ function chunkOutRenderString(renderString, separators) {
     return chunks.filter((item) => !!item); // Only removes empty strings. Not empty objects. This is on purpose in case there is a react component that doesn't need any props.
 }
 
-const Renderer = ({ renderString, customComponent, customTag, className, couldHaveEmbeds = true, }) => {
+function Renderer({ renderString, customComponent, customTag, className, couldHaveEmbeds = true, }) {
     const separators = {
         start: `<${customTag}>`,
         end: `</${customTag}>`,
@@ -3129,7 +3150,7 @@ const Renderer = ({ renderString, customComponent, customTag, className, couldHa
         });
     }, [chunkedOutRenderString, customComponent]);
     return React.createElement("div", { className: className }, elements);
-};
+}
 
 export { Editor, Renderer, buildContainer, toolbarOptions };
 //# sourceMappingURL=index.js.map

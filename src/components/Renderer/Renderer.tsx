@@ -2,20 +2,20 @@ import "react-quill/dist/quill.snow.css";
 import React, { ReactNode, useMemo } from "react";
 import { chunkOutRenderString } from "../../utils";
 
-interface RendererProps<CustomPropTypes = undefined> {
+export interface RendererProps<CustomPropTypes = undefined> {
   renderString: string;
-  customComponent?: (props: CustomPropTypes) => ReactNode;
+  customComponent: (props: CustomPropTypes) => ReactNode;
   className?: string;
   couldHaveEmbeds?: boolean;
   customTag?: string;
 }
-export const Renderer = ({
+export function Renderer<CustomPropTypes>({
   renderString,
   customComponent,
   customTag,
   className,
   couldHaveEmbeds = true,
-}: RendererProps) => {
+}: RendererProps<CustomPropTypes>) {
   const separators = {
     start: `<${customTag}>`,
     end: `</${customTag}>`,
@@ -37,4 +37,5 @@ export const Renderer = ({
     });
   }, [chunkedOutRenderString, customComponent]);
   return <div className={className}>{elements}</div>;
-};
+}
+export default Renderer;

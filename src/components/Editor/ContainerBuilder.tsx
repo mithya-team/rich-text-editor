@@ -11,7 +11,7 @@ export enum toolbarOptions {
   image,
 }
 
-export const buildContainer = (options: toolbarOptions[] | undefined) => {
+export const buildContainer = (options: toolbarOptions[] | null) => {
   if (!options)
     options = [
       toolbarOptions.fontStyle,
