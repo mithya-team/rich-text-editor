@@ -1,3 +1,5 @@
+import React from "react";
+
 export enum toolbarOptions {
   fontStyle = 0,
   quoteCode,
@@ -11,7 +13,10 @@ export enum toolbarOptions {
   image,
 }
 
-export const buildContainer = (options: toolbarOptions[] | null) => {
+export const buildContainer = (
+  options: toolbarOptions[] | null,
+  AddEmbedHandler: React.FC<{ onFinish: (url: Object) => void }> | null
+) => {
   if (!options)
     options = [
       toolbarOptions.fontStyle,
@@ -66,6 +71,7 @@ export const buildContainer = (options: toolbarOptions[] | null) => {
         break;
     }
   });
-  container = [...container, ["customembed"]];
+  if (AddEmbedHandler) container = [...container, ["customembed"]];
+
   return container;
 };

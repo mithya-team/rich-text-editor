@@ -8,7 +8,7 @@ export class Embed extends BlockEmbed {
 
   static create(val: any) {
     const node = super.create();
-    node.innerHTML = `"type":"card","title":"Testing","subtitle":"Testing subtitle"`;
+    node.innerHTML = JSON.stringify(val);
     return node;
   }
 }

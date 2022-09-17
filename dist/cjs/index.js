@@ -2950,7 +2950,7 @@ const Modal = ({ onFinish, imageUploader }) => {
             React__default["default"].createElement(UploadZone, { onDefault: onDefault, onUploading: onUploading, uploadTo: imageUploader, onFinish: onFinish }))));
 };
 
-var css_248z = ".main {\r\n  display: grid;\r\n  place-items: center;\r\n}\r\n.ql-addImage {\r\n  background-image: url(\"./add-image.svg\") !important;\r\n  background-repeat: no-repeat !important;\r\n}\r\n.add-embed {\r\n  border-color: black;\r\n  border-radius: 4px;\r\n}\r\n.ql-customembed:before {\r\n  content: \"+ Add embed\";\r\n  width: 10em;\r\n}\r\n.ql-customembed {\r\n  color: #444 !important;\r\n  font-size: 14px !important;\r\n  font-weight: 500 !important;\r\n  border: 1px solid transparent !important;\r\n  width: 7em !important;\r\n  font-family: Arial, Helvetica, sans-serif !important;\r\n}\r\n";
+var css_248z = ".main {\r\n  display: grid;\r\n  place-items: center;\r\n}\r\n.ql-addImage {\r\n  background-image: url(\"./add-image.svg\") !important;\r\n  background-repeat: no-repeat !important;\r\n}\r\n.add-embed {\r\n  border-color: black;\r\n  border-radius: 4px;\r\n}\r\n.ql-customembed:before {\r\n  content: \"+ Add embed\";\r\n  width: 10em;\r\n}\r\n.ql-customembed {\r\n  color: #444 !important;\r\n  font-size: 14px !important;\r\n  font-weight: 500 !important;\r\n  border: 1px solid transparent !important;\r\n  width: 7em !important;\r\n  font-family: Arial, Helvetica, sans-serif !important;\r\n}\r\nxyz {\r\n  display: block;\r\n  cursor: disabled;\r\n}\r\nxyz::after {\r\n  content: \"custom embed goes here\";\r\n}\r\n";
 styleInject(css_248z);
 
 exports.toolbarOptions = void 0;
@@ -2966,7 +2966,7 @@ exports.toolbarOptions = void 0;
     toolbarOptions[toolbarOptions["clear"] = 8] = "clear";
     toolbarOptions[toolbarOptions["image"] = 9] = "image";
 })(exports.toolbarOptions || (exports.toolbarOptions = {}));
-const buildContainer = (options) => {
+const buildContainer = (options, AddEmbedHandler) => {
     if (!options)
         options = [
             exports.toolbarOptions.fontStyle,
@@ -3020,7 +3020,8 @@ const buildContainer = (options) => {
                 break;
         }
     });
-    container = [...container, ["customembed"]];
+    if (AddEmbedHandler)
+        container = [...container, ["customembed"]];
     return container;
 };
 
@@ -3028,7 +3029,7 @@ const BlockEmbed = ReactQuill.Quill.import("blots/block/embed");
 class Embed extends BlockEmbed {
     static create(val) {
         const node = super.create();
-        node.innerHTML = `"type":"card","title":"Testing","subtitle":"Testing subtitle"`;
+        node.innerHTML = JSON.stringify(val);
         return node;
     }
 }
@@ -3036,15 +3037,17 @@ Embed.blotName = "customembed";
 Embed.tagName = "x";
 Embed.ref = {};
 
-const buildHandler = (imageUploader, imageUploadHandler, addEmbed, openImageHandlerModal) => {
-    let handlers = { customembed: addEmbed };
+const buildHandler = (imageUploader, imageUploadHandler, AddEmbedHandler, openEmbedHandlerModal, openImageHandlerModal) => {
+    let handlers = {};
     if (imageUploadHandler || imageUploader) {
         handlers = Object.assign(Object.assign({}, handlers), { image: openImageHandlerModal });
     }
+    if (AddEmbedHandler)
+        handlers = Object.assign(Object.assign({}, handlers), { customembed: openEmbedHandlerModal });
     return handlers;
 };
 
-const Editor = ({ quillProps = null, imageUploader = null, ImageUploadHandler = null, options = null, customTag = "default", onChange, }) => {
+const Editor = ({ quillProps = null, imageUploader = null, ImageUploadHandler = null, AddEmbedHandler = null, options = null, customTag = "default", onChange, }) => {
     var _a;
     ReactQuill.Quill.register({
         "formats/customembed": (_a = class NewEmbed extends Embed {
@@ -3053,8 +3056,12 @@ const Editor = ({ quillProps = null, imageUploader = null, ImageUploadHandler = 
             _a),
     }, true);
     const [showImageHandler, setShowImageHandler] = React.useState(false);
+    const [showEmbedHandler, setEmbedHandler] = React.useState(false);
     const openImageHandlerModal = () => {
         setShowImageHandler(true);
+    };
+    const openEmbedHandlerModal = () => {
+        setEmbedHandler(true);
     };
     const quillObj = React.useRef();
     const insertImage = (url) => {
@@ -3064,20 +3071,19 @@ const Editor = ({ quillProps = null, imageUploader = null, ImageUploadHandler = 
         quillObj.current.getEditor().insertEmbed(range.index, "image", url);
         setShowImageHandler(false);
     };
-    const addEmbed = () => {
+    const addEmbed = (data) => {
         if (!quillObj || !quillObj.current)
             return;
         const range = quillObj.current.getEditor().getSelection(true);
         const type = "customembed";
-        quillObj.current
-            .getEditor()
-            .insertEmbed(range.index, type, { tag: customTag });
+        quillObj.current.getEditor().insertEmbed(range.index, type, data);
+        setEmbedHandler(false);
     };
     const modules = React.useMemo(() => {
         return {
             toolbar: {
-                container: buildContainer(options),
-                handlers: buildHandler(imageUploader, ImageUploadHandler, addEmbed, openImageHandlerModal),
+                container: buildContainer(options, AddEmbedHandler),
+                handlers: buildHandler(imageUploader, ImageUploadHandler, AddEmbedHandler, openEmbedHandlerModal, openImageHandlerModal),
             },
         };
     }, [options, imageUploader]);
@@ -3085,7 +3091,8 @@ const Editor = ({ quillProps = null, imageUploader = null, ImageUploadHandler = 
         React__default["default"].createElement("div", null,
             React__default["default"].createElement(ReactQuill__default["default"], Object.assign({ modules: modules }, quillProps, { ref: quillObj, onChange: onChange })),
             showImageHandler &&
-                (ImageUploadHandler ? (React__default["default"].createElement(ImageUploadHandler, { onFinish: insertImage })) : (imageUploader && (React__default["default"].createElement(Modal, { imageUploader: imageUploader, onFinish: insertImage })))))));
+                (ImageUploadHandler ? (React__default["default"].createElement(ImageUploadHandler, { onFinish: insertImage })) : (imageUploader && (React__default["default"].createElement(Modal, { imageUploader: imageUploader, onFinish: insertImage })))),
+            AddEmbedHandler && showEmbedHandler && (React__default["default"].createElement(AddEmbedHandler, { onFinish: addEmbed })))));
 };
 
 /**
@@ -3105,14 +3112,14 @@ function chunkOutRenderString(renderString, separators) {
             let endIndex = temp.indexOf(separatorEnd);
             if (endIndex !== -1) {
                 let jsonChunk = temp.substring(0, endIndex);
-                jsonChunk = JSON.parse(`{${jsonChunk}}`);
+                jsonChunk = JSON.parse(jsonChunk);
                 chunks.push(jsonChunk);
                 _renderString = temp.substring(endIndex + separatorEnd.length);
             }
             else {
                 // assuming the rest to be jsonChunk.
                 let jsonChunk = temp;
-                jsonChunk = JSON.parse(`{${jsonChunk}}`);
+                jsonChunk = JSON.parse(jsonChunk);
                 chunks.push(jsonChunk);
                 _renderString = "";
             }

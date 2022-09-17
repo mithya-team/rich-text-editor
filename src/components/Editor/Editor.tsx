@@ -11,6 +11,7 @@ export interface EditorProps {
   quillProps?: any | null;
   imageUploader: ((file: File) => Promise<string>) | undefined | null;
   ImageUploadHandler?: React.FC<{ onFinish: (url: string) => void }> | null;
+  AddEmbedHandler: React.FC<{ onFinish: (url: Object) => void }> | null;
   options: toolbarOptions[] | undefined | null;
   customTag: string;
   onChange: any | undefined;
@@ -20,6 +21,7 @@ export const Editor = ({
   quillProps = null,
   imageUploader = null,
   ImageUploadHandler = null,
+  AddEmbedHandler = null,
   options = null,
   customTag = "default",
   onChange,
@@ -34,8 +36,13 @@ export const Editor = ({
   );
 
   const [showImageHandler, setShowImageHandler] = useState(false);
+  const [showEmbedHandler, setEmbedHandler] = useState(false);
+
   const openImageHandlerModal = () => {
     setShowImageHandler(true);
+  };
+  const openEmbedHandlerModal = () => {
+    setEmbedHandler(true);
   };
   const quillObj = useRef<ReactQuill>();
 
@@ -46,23 +53,23 @@ export const Editor = ({
     setShowImageHandler(false);
   };
 
-  const addEmbed = () => {
+  const addEmbed = (data: Object) => {
     if (!quillObj || !quillObj.current) return;
     const range = quillObj.current.getEditor().getSelection(true);
     const type = "customembed";
-    quillObj.current
-      .getEditor()
-      .insertEmbed(range.index, type, { tag: customTag });
+    quillObj.current.getEditor().insertEmbed(range.index, type, data);
+    setEmbedHandler(false);
   };
 
   const modules = useMemo(() => {
     return {
       toolbar: {
-        container: buildContainer(options),
+        container: buildContainer(options, AddEmbedHandler),
         handlers: buildHandler(
           imageUploader,
           ImageUploadHandler,
-          addEmbed,
+          AddEmbedHandler,
+          openEmbedHandlerModal,
           openImageHandlerModal
         ),
       },
@@ -86,6 +93,10 @@ export const Editor = ({
               <Modal imageUploader={imageUploader} onFinish={insertImage} />
             )
           ))}
+
+        {AddEmbedHandler && showEmbedHandler && (
+          <AddEmbedHandler onFinish={addEmbed} />
+        )}
       </div>
     </div>
   );

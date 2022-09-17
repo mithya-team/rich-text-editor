@@ -20,13 +20,15 @@ export function chunkOutRenderString<Delta>(
       let endIndex = temp.indexOf(separatorEnd);
       if (endIndex !== -1) {
         let jsonChunk = temp.substring(0, endIndex);
-        jsonChunk = JSON.parse(`{${jsonChunk}}`);
+        jsonChunk = JSON.parse(jsonChunk);
         chunks.push(jsonChunk);
         _renderString = temp.substring(endIndex + separatorEnd.length);
       } else {
         // assuming the rest to be jsonChunk.
         let jsonChunk = temp;
-        jsonChunk = JSON.parse(`{${jsonChunk}}`);
+
+        jsonChunk = JSON.parse(jsonChunk);
+
         chunks.push(jsonChunk);
         _renderString = "";
       }

@@ -8,8 +8,11 @@ export interface EditorProps {
     ImageUploadHandler?: React.FC<{
         onFinish: (url: string) => void;
     }> | null;
+    AddEmbedHandler: React.FC<{
+        onFinish: (url: Object) => void;
+    }> | null;
     options: toolbarOptions[] | undefined | null;
     customTag: string;
     onChange: any | undefined;
 }
-export declare const Editor: ({ quillProps, imageUploader, ImageUploadHandler, options, customTag, onChange, }: EditorProps) => JSX.Element;
+export declare const Editor: ({ quillProps, imageUploader, ImageUploadHandler, AddEmbedHandler, options, customTag, onChange, }: EditorProps) => JSX.Element;

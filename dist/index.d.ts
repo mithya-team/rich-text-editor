@@ -12,7 +12,9 @@ declare enum toolbarOptions {
     clear = 8,
     image = 9
 }
-declare const buildContainer: (options: toolbarOptions[] | null) => (Object | string[])[];
+declare const buildContainer: (options: toolbarOptions[] | null, AddEmbedHandler: React.FC<{
+    onFinish: (url: Object) => void;
+}> | null) => (Object | string[])[];
 
 interface EditorProps {
     quillProps?: any | null;
@@ -20,11 +22,14 @@ interface EditorProps {
     ImageUploadHandler?: React.FC<{
         onFinish: (url: string) => void;
     }> | null;
+    AddEmbedHandler: React.FC<{
+        onFinish: (url: Object) => void;
+    }> | null;
     options: toolbarOptions[] | undefined | null;
     customTag: string;
     onChange: any | undefined;
 }
-declare const Editor: ({ quillProps, imageUploader, ImageUploadHandler, options, customTag, onChange, }: EditorProps) => JSX.Element;
+declare const Editor: ({ quillProps, imageUploader, ImageUploadHandler, AddEmbedHandler, options, customTag, onChange, }: EditorProps) => JSX.Element;
 
 interface RendererProps<CustomPropTypes = undefined> {
     renderString: string;
