@@ -9,12 +9,12 @@ import "./Editor.css";
 
 export interface EditorProps {
   quillProps?: any | null;
-  imageUploader: ((file: File) => Promise<string>) | null;
+  imageUploader: ((file: File) => Promise<string>) | null | undefined;
   ImageUploadHandler?: React.FC<{ onFinish: (url: string) => void }> | null;
   AddEmbedHandler: React.FC<{ onFinish: (url: Object) => void }> | null;
-  options: toolbarOptions[] | null;
+  options: toolbarOptions[] | null | undefined;
   customTag: string;
-  onChange: any;
+  onChange: any | undefined;
 }
 
 export const Editor = ({
@@ -75,15 +75,7 @@ export const Editor = ({
         ),
       },
     };
-  }, [
-    options,
-    AddEmbedHandler,
-    imageUploader,
-    ImageUploadHandler,
-    AddEmbedHandler,
-    openEmbedHandlerModal,
-    openImageHandlerModal,
-  ]);
+  }, [options, imageUploader]);
 
   return (
     <div className="main">

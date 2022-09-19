@@ -18,14 +18,14 @@ declare const buildContainer: (options: toolbarOptions[] | null, AddEmbedHandler
 
 interface EditorProps {
     quillProps?: any | null;
-    imageUploader: ((file: File) => Promise<string>) | undefined | null;
+    imageUploader: ((file: File) => Promise<string>) | null | undefined;
     ImageUploadHandler?: React.FC<{
         onFinish: (url: string) => void;
     }> | null;
     AddEmbedHandler: React.FC<{
         onFinish: (url: Object) => void;
     }> | null;
-    options: toolbarOptions[] | undefined | null;
+    options: toolbarOptions[] | null | undefined;
     customTag: string;
     onChange: any | undefined;
 }
