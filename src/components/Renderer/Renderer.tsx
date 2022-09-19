@@ -36,6 +36,7 @@ export function Renderer<CustomPropTypes>({
       }
     });
   }, [chunkedOutRenderString, customComponent]);
+
   return <div className={className}>{elements}</div>;
 }
 export default Renderer;
