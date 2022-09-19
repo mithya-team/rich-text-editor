@@ -22,10 +22,3 @@
   width: 7em !important;
   font-family: Arial, Helvetica, sans-serif !important;
 }
-xyz {
-  display: block;
-  cursor: disabled;
-}
-xyz::after {
-  content: "custom embed goes here";
-}

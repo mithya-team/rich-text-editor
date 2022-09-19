@@ -1,20 +1,20 @@
 import React, { useMemo, useRef, useState } from "react";
 import ReactQuill, { Quill } from "react-quill";
-import "react-quill/dist/quill.snow.css";
 import { Modal } from "../Modal";
-import "./Editor.css";
 import { buildContainer, toolbarOptions } from "./ContainerBuilder";
-import { Embed } from "../Embed";
 import { buildHandler } from "./HandlerBuilder";
+import { Embed } from "../Embed";
+import "react-quill/dist/quill.snow.css";
+import "./Editor.css";
 
 export interface EditorProps {
   quillProps?: any | null;
-  imageUploader: ((file: File) => Promise<string>) | undefined | null;
+  imageUploader: ((file: File) => Promise<string>) | null;
   ImageUploadHandler?: React.FC<{ onFinish: (url: string) => void }> | null;
   AddEmbedHandler: React.FC<{ onFinish: (url: Object) => void }> | null;
-  options: toolbarOptions[] | undefined | null;
+  options: toolbarOptions[] | null;
   customTag: string;
-  onChange: any | undefined;
+  onChange: any;
 }
 
 export const Editor = ({
@@ -44,6 +44,7 @@ export const Editor = ({
   const openEmbedHandlerModal = () => {
     setEmbedHandler(true);
   };
+
   const quillObj = useRef<ReactQuill>();
 
   const insertImage = (url: string) => {
@@ -74,7 +75,15 @@ export const Editor = ({
         ),
       },
     };
-  }, [options, imageUploader]);
+  }, [
+    options,
+    AddEmbedHandler,
+    imageUploader,
+    ImageUploadHandler,
+    AddEmbedHandler,
+    openEmbedHandlerModal,
+    openImageHandlerModal,
+  ]);
 
   return (
     <div className="main">
@@ -85,6 +94,7 @@ export const Editor = ({
           ref={quillObj}
           onChange={onChange}
         />
+
         {showImageHandler &&
           (ImageUploadHandler ? (
             <ImageUploadHandler onFinish={insertImage} />
