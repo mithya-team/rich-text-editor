@@ -14,7 +14,7 @@ export interface EditorProps {
   AddEmbedHandler: React.FC<{ onFinish: (embedObject: Object) => void }> | null;
   options: toolbarOptions[] | null | undefined;
   customTag: string;
-  onChange: any | undefined;
+  onChange?: ((value: string) => void) | undefined;
 }
 
 export const Editor = ({
