@@ -16,7 +16,7 @@ export interface EditorProps {
   }> | null;
   options?: ToolbarOptions[] | null | undefined;
   customTag?: string;
-  className: string;
+  className?: string;
   onChange?: ((value: string) => void) | undefined;
 }
 
@@ -69,6 +69,15 @@ export const Editor = ({
     setEmbedHandler(false);
   };
 
+  const ImageModalBox = useMemo(() => {
+    if (showImageHandler) {
+      if (ImageUploadHandler)
+        return <ImageUploadHandler onFinish={insertImage} />;
+      else if (imageUploader)
+        return <Modal imageUploader={imageUploader} onFinish={insertImage} />;
+    } else return "";
+  }, [showImageHandler, ImageUploadHandler, imageUploader]);
+
   const modules = useMemo(() => {
     return {
       toolbar: {
@@ -93,15 +102,7 @@ export const Editor = ({
           ref={quillObj}
           onChange={onChange}
         />
-
-        {showImageHandler &&
-          (ImageUploadHandler ? (
-            <ImageUploadHandler onFinish={insertImage} />
-          ) : (
-            imageUploader && (
-              <Modal imageUploader={imageUploader} onFinish={insertImage} />
-            )
-          ))}
+        {ImageModalBox}
 
         {AddEmbedHandler && showEmbedHandler && (
           <AddEmbedHandler onFinish={addEmbed} />
