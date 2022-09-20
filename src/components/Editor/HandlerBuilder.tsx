@@ -7,7 +7,7 @@ export type buildHandler = (
   AddEmbedHandler: React.FC<{ onFinish: (embedObject: Object) => void }> | null,
   openEmbedHandlerModal: () => void,
   openImageHandlerModal: () => void
-) => Object;
+) => Record<string, any>;
 
 export const buildHandler: buildHandler = (
   imageUploader,
@@ -16,7 +16,7 @@ export const buildHandler: buildHandler = (
   openEmbedHandlerModal,
   openImageHandlerModal
 ) => {
-  let handlers: Object = {};
+  let handlers: Record<string, any> = {};
 
   if (ImageUploadHandler || imageUploader) {
     handlers = { ...handlers, image: openImageHandlerModal };
