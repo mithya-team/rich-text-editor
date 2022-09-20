@@ -28,14 +28,16 @@ export const Editor = ({
   customTag = "default",
   onChange,
 }: EditorProps) => {
-  Quill.register(
-    {
-      "formats/customembed": class NewEmbed extends Embed {
-        static tagName = customTag;
+  if (AddEmbedHandler) {
+    Quill.register(
+      {
+        "formats/customembed": class NewEmbed extends Embed {
+          static tagName = customTag;
+        },
       },
-    },
-    true
-  );
+      true
+    );
+  }
 
   const [showImageHandler, setShowImageHandler] = useState(false);
   const [showEmbedHandler, setEmbedHandler] = useState(false);
