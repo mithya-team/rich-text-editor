@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 export type buildHandler = (
   imageUploader: ((file: File) => Promise<string>) | undefined | null,
-  imageUploadHandler:
+  ImageUploadHandler:
     | ((props: { onFinish: (url: string) => void }) => ReactNode)
     | null,
   AddEmbedHandler: React.FC<{ onFinish: (embedObject: Object) => void }> | null,
@@ -11,14 +11,14 @@ export type buildHandler = (
 
 export const buildHandler: buildHandler = (
   imageUploader,
-  imageUploadHandler,
+  ImageUploadHandler,
   AddEmbedHandler,
   openEmbedHandlerModal,
   openImageHandlerModal
 ) => {
   let handlers: Object = {};
 
-  if (imageUploadHandler || imageUploader) {
+  if (ImageUploadHandler || imageUploader) {
     handlers = { ...handlers, image: openImageHandlerModal };
   }
 
