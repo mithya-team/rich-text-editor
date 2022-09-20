@@ -9,11 +9,13 @@ import "./Editor.css";
 
 export interface EditorProps {
   quillProps?: ReactQuillProps | null;
-  imageUploader: ((file: File) => Promise<string>) | null | undefined;
+  imageUploader?: ((file: File) => Promise<string>) | null | undefined;
   ImageUploadHandler?: React.FC<{ onFinish: (url: string) => void }> | null;
-  AddEmbedHandler: React.FC<{ onFinish: (embedObject: Object) => void }> | null;
-  options: toolbarOptions[] | null | undefined;
-  customTag: string;
+  AddEmbedHandler?: React.FC<{
+    onFinish: (embedObject: Object) => void;
+  }> | null;
+  options?: toolbarOptions[] | null | undefined;
+  customTag?: string;
   onChange?: ((value: string) => void) | undefined;
 }
 

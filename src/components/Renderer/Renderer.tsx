@@ -4,7 +4,7 @@ import { chunkOutRenderString } from "../../utils";
 
 export interface RendererProps<CustomPropTypes = unknown> {
   renderString: string;
-  customComponent: (props: CustomPropTypes) => ReactNode;
+  customComponent?: (props: CustomPropTypes) => ReactNode;
   className?: string;
   couldHaveEmbeds?: boolean;
   customTag?: string;
@@ -12,8 +12,8 @@ export interface RendererProps<CustomPropTypes = unknown> {
 export function Renderer<CustomPropTypes>({
   renderString,
   customComponent,
-  customTag,
-  className,
+  customTag = "default",
+  className = "",
   couldHaveEmbeds = true,
 }: RendererProps<CustomPropTypes>) {
   const separators = {
