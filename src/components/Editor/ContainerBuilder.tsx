@@ -1,6 +1,6 @@
 import React from "react";
 
-export enum toolbarOptions {
+export enum ToolbarOptions {
   fontStyle = 0,
   quoteCode,
   headers,
@@ -14,42 +14,42 @@ export enum toolbarOptions {
 }
 
 export const buildContainer = (
-  options: toolbarOptions[] | null,
+  options: ToolbarOptions[] | null,
   AddEmbedHandler: React.FC<{ onFinish: (embedObject: Object) => void }> | null
 ) => {
   if (!options)
     options = [
-      toolbarOptions.fontStyle,
-      toolbarOptions.list,
-      toolbarOptions.align,
-      toolbarOptions.font,
-      toolbarOptions.image,
-      toolbarOptions.clear,
+      ToolbarOptions.fontStyle,
+      ToolbarOptions.list,
+      ToolbarOptions.align,
+      ToolbarOptions.font,
+      ToolbarOptions.image,
+      ToolbarOptions.clear,
     ];
 
   let container: Array<Array<string> | Object> = [];
   options.forEach((o) => {
     switch (o) {
-      case toolbarOptions.fontStyle:
+      case ToolbarOptions.fontStyle:
         container.push(["bold", "italic", "underline", "strike"]);
         break;
-      case toolbarOptions.quoteCode:
+      case ToolbarOptions.quoteCode:
         container = [...container, ["blockquote", "code-block"]];
         break;
-      case toolbarOptions.headers:
+      case ToolbarOptions.headers:
         container = [
           ...container,
           [{ header: 1 }, { header: 2 }],
           [{ header: [1, 2, 3, 4, 5, 6, false] }],
         ];
         break;
-      case toolbarOptions.list:
+      case ToolbarOptions.list:
         container = [...container, [{ list: "ordered" }, { list: "bullet" }]];
         break;
-      case toolbarOptions.indentation:
+      case ToolbarOptions.indentation:
         container = [...container, [{ indent: "-1" }, { indent: "+1" }]];
         break;
-      case toolbarOptions.font:
+      case ToolbarOptions.font:
         container = [
           ...container,
           [{ font: [] }],
@@ -57,16 +57,16 @@ export const buildContainer = (
           [{ size: ["small", false, "large", "huge"] }],
         ];
         break;
-      case toolbarOptions.script:
+      case ToolbarOptions.script:
         container = [...container, [{ script: "sub" }, { script: "super" }]];
         break;
-      case toolbarOptions.align:
+      case ToolbarOptions.align:
         container = [...container, [{ align: [] }]];
         break;
-      case toolbarOptions.image:
+      case ToolbarOptions.image:
         container = [...container, ["image"]];
         break;
-      case toolbarOptions.clear:
+      case ToolbarOptions.clear:
         container = [...container, ["clean"]];
         break;
     }

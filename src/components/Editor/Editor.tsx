@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from "react";
 import ReactQuill, { ReactQuillProps, Quill } from "react-quill";
 import { Modal } from "../Modal";
-import { buildContainer, toolbarOptions } from "./ContainerBuilder";
+import { buildContainer, ToolbarOptions } from "./ContainerBuilder";
 import { buildHandler } from "./HandlerBuilder";
 import { Embed } from "../Embed";
 import "react-quill/dist/quill.snow.css";
@@ -14,7 +14,7 @@ export interface EditorProps {
   AddEmbedHandler?: React.FC<{
     onFinish: (embedObject: Object) => void;
   }> | null;
-  options?: toolbarOptions[] | null | undefined;
+  options?: ToolbarOptions[] | null | undefined;
   customTag?: string;
   onChange?: ((value: string) => void) | undefined;
 }
