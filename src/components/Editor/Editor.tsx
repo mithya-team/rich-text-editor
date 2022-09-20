@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from "react";
-import ReactQuill, { Quill } from "react-quill";
+import ReactQuill, { ReactQuillProps, Quill } from "react-quill";
 import { Modal } from "../Modal";
 import { buildContainer, toolbarOptions } from "./ContainerBuilder";
 import { buildHandler } from "./HandlerBuilder";
@@ -8,7 +8,7 @@ import "react-quill/dist/quill.snow.css";
 import "./Editor.css";
 
 export interface EditorProps {
-  quillProps?: any | null;
+  quillProps?: ReactQuillProps | null;
   imageUploader: ((file: File) => Promise<string>) | null | undefined;
   ImageUploadHandler?: React.FC<{ onFinish: (url: string) => void }> | null;
   AddEmbedHandler: React.FC<{ onFinish: (url: Object) => void }> | null;
@@ -45,7 +45,8 @@ export const Editor = ({
     setEmbedHandler(true);
   };
 
-  const quillObj = useRef<ReactQuill>();
+  const quillObj: React.LegacyRef<ReactQuill> | null =
+    useRef<ReactQuill | null>(null);
 
   const insertImage = (url: string) => {
     if (!quillObj || !quillObj.current) return;
