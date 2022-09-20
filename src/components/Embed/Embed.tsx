@@ -6,9 +6,9 @@ export class Embed extends BlockEmbed {
   static tagName = "x";
   static ref = {};
 
-  static create(val: any) {
+  static create(embedObject: any) {
     const node = super.create();
-    node.innerHTML = JSON.stringify(val);
+    node.innerHTML = JSON.stringify(embedObject);
     return node;
   }
 }

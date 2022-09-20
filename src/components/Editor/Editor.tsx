@@ -11,7 +11,7 @@ export interface EditorProps {
   quillProps?: ReactQuillProps | null;
   imageUploader: ((file: File) => Promise<string>) | null | undefined;
   ImageUploadHandler?: React.FC<{ onFinish: (url: string) => void }> | null;
-  AddEmbedHandler: React.FC<{ onFinish: (url: Object) => void }> | null;
+  AddEmbedHandler: React.FC<{ onFinish: (embedObject: Object) => void }> | null;
   options: toolbarOptions[] | null | undefined;
   customTag: string;
   onChange: any | undefined;
@@ -55,11 +55,11 @@ export const Editor = ({
     setShowImageHandler(false);
   };
 
-  const addEmbed = (data: Object) => {
+  const addEmbed = (embedObject: Object) => {
     if (!quillObj || !quillObj.current) return;
     const range = quillObj.current.getEditor().getSelection(true);
     const type = "customembed";
-    quillObj.current.getEditor().insertEmbed(range.index, type, data);
+    quillObj.current.getEditor().insertEmbed(range.index, type, embedObject);
     setEmbedHandler(false);
   };
 

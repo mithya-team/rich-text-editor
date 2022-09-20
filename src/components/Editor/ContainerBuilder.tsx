@@ -15,7 +15,7 @@ export enum toolbarOptions {
 
 export const buildContainer = (
   options: toolbarOptions[] | null,
-  AddEmbedHandler: React.FC<{ onFinish: (url: Object) => void }> | null
+  AddEmbedHandler: React.FC<{ onFinish: (embedObject: Object) => void }> | null
 ) => {
   if (!options)
     options = [

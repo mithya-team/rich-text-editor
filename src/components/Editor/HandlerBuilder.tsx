@@ -4,7 +4,7 @@ export type buildHandler = (
   imageUploadHandler:
     | ((props: { onFinish: (url: string) => void }) => ReactNode)
     | null,
-  AddEmbedHandler: React.FC<{ onFinish: (url: Object) => void }> | null,
+  AddEmbedHandler: React.FC<{ onFinish: (embedObject: Object) => void }> | null,
   openEmbedHandlerModal: () => void,
   openImageHandlerModal: () => void
 ) => Object;
