@@ -16,6 +16,7 @@ export interface EditorProps {
   }> | null;
   options?: ToolbarOptions[] | null | undefined;
   customTag?: string;
+  className: string;
   onChange?: ((value: string) => void) | undefined;
 }
 
@@ -26,6 +27,7 @@ export const Editor = ({
   AddEmbedHandler = null,
   options = null,
   customTag = "default",
+  className = "editor-main",
   onChange,
 }: EditorProps) => {
   if (AddEmbedHandler) {
@@ -83,7 +85,7 @@ export const Editor = ({
   }, [options, imageUploader]);
 
   return (
-    <div className="main">
+    <div className={className}>
       <div>
         <ReactQuill
           modules={modules}
