@@ -4,14 +4,14 @@ import { chunkOutRenderString } from "../../utils";
 
 export interface RendererProps<CustomPropTypes = unknown> {
   renderString: string;
-  customComponent?: (props: CustomPropTypes) => ReactNode;
+  EmbedRenderer?: (props: CustomPropTypes) => ReactNode;
   className?: string;
   couldHaveEmbeds?: boolean;
   customTag?: string;
 }
 export function Renderer<CustomPropTypes>({
   renderString,
-  customComponent,
+  EmbedRenderer,
   customTag = "default",
   className = "",
   couldHaveEmbeds = true,
@@ -29,13 +29,13 @@ export function Renderer<CustomPropTypes>({
       if (typeof chunk === "string") {
         return <div dangerouslySetInnerHTML={{ __html: chunk }} />;
       }
-      if (customComponent) return customComponent(chunk);
+      if (EmbedRenderer) return EmbedRenderer(chunk);
       else {
         console.error("No renderer given but renderString has chunks.");
         return null;
       }
     });
-  }, [chunkedOutRenderString, customComponent]);
+  }, [chunkedOutRenderString, EmbedRenderer]);
 
   return <div className={className}>{elements}</div>;
 }
