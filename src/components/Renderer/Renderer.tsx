@@ -2,7 +2,7 @@ import "react-quill/dist/quill.snow.css";
 import React, { ReactNode, useMemo } from "react";
 import { chunkOutRenderString } from "../../utils";
 
-export interface RendererProps<CustomPropTypes = undefined> {
+export interface RendererProps<CustomPropTypes = unknown> {
   renderString: string;
   customComponent: (props: CustomPropTypes) => ReactNode;
   className?: string;
