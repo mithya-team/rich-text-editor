@@ -3,6 +3,6 @@ export declare class Embed extends BlockEmbed {
     static blotName: string;
     static tagName: string;
     static ref: {};
-    static create(val: any): any;
+    static create(embedObject: any): any;
 }
 export {};

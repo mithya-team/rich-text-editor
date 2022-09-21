@@ -1,5 +1,5 @@
 import React from "react";
-export declare enum toolbarOptions {
+export declare enum ToolbarOptions {
     fontStyle = 0,
     quoteCode = 1,
     headers = 2,
@@ -11,6 +11,6 @@ export declare enum toolbarOptions {
     clear = 8,
     image = 9
 }
-export declare const buildContainer: (options: toolbarOptions[] | null, AddEmbedHandler: React.FC<{
-    onFinish: (url: Object) => void;
+export declare const buildContainer: (options: ToolbarOptions[] | null, AddEmbedHandler: React.FC<{
+    onFinish: (embedObject: Object) => void;
 }> | null) => (Object | string[])[];

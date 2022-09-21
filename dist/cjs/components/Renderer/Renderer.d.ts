@@ -1,11 +1,11 @@
 import "react-quill/dist/quill.snow.css";
 import { ReactNode } from "react";
-export interface RendererProps<CustomPropTypes = undefined> {
+export interface RendererProps<CustomPropTypes = unknown> {
     renderString: string;
-    customComponent: (props: CustomPropTypes) => ReactNode;
+    EmbedRenderer?: (props: CustomPropTypes) => ReactNode;
     className?: string;
     couldHaveEmbeds?: boolean;
     customTag?: string;
 }
-export declare function Renderer<CustomPropTypes>({ renderString, customComponent, customTag, className, couldHaveEmbeds, }: RendererProps<CustomPropTypes>): JSX.Element;
+export declare function Renderer<CustomPropTypes>({ renderString, EmbedRenderer, customTag, className, couldHaveEmbeds, }: RendererProps<CustomPropTypes>): JSX.Element;
 export default Renderer;

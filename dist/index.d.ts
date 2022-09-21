@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
+import { ReactQuillProps } from 'react-quill';
 
-declare enum toolbarOptions {
+declare enum ToolbarOptions {
     fontStyle = 0,
     quoteCode = 1,
     headers = 2,
@@ -12,32 +13,33 @@ declare enum toolbarOptions {
     clear = 8,
     image = 9
 }
-declare const buildContainer: (options: toolbarOptions[] | null, AddEmbedHandler: React.FC<{
-    onFinish: (url: Object) => void;
+declare const buildContainer: (options: ToolbarOptions[] | null, AddEmbedHandler: React.FC<{
+    onFinish: (embedObject: Object) => void;
 }> | null) => (Object | string[])[];
 
 interface EditorProps {
-    quillProps?: any | null;
-    imageUploader: ((file: File) => Promise<string>) | null | undefined;
+    quillProps?: ReactQuillProps | null;
+    imageUploader?: ((file: File) => Promise<string>) | null | undefined;
     ImageUploadHandler?: React.FC<{
         onFinish: (url: string) => void;
     }> | null;
-    AddEmbedHandler: React.FC<{
-        onFinish: (url: Object) => void;
+    AddEmbedHandler?: React.FC<{
+        onFinish: (embedObject: Object) => void;
     }> | null;
-    options: toolbarOptions[] | null | undefined;
-    customTag: string;
-    onChange: any | undefined;
+    options?: ToolbarOptions[] | null | undefined;
+    customTag?: string;
+    className?: string;
+    onChange?: ((value: string) => void) | undefined;
 }
-declare const Editor: ({ quillProps, imageUploader, ImageUploadHandler, AddEmbedHandler, options, customTag, onChange, }: EditorProps) => JSX.Element;
+declare const Editor: ({ quillProps, imageUploader, ImageUploadHandler, AddEmbedHandler, options, customTag, className, onChange, }: EditorProps) => JSX.Element;
 
-interface RendererProps<CustomPropTypes = undefined> {
+interface RendererProps<CustomPropTypes = unknown> {
     renderString: string;
-    customComponent: (props: CustomPropTypes) => ReactNode;
+    EmbedRenderer?: (props: CustomPropTypes) => ReactNode;
     className?: string;
     couldHaveEmbeds?: boolean;
     customTag?: string;
 }
-declare function Renderer<CustomPropTypes>({ renderString, customComponent, customTag, className, couldHaveEmbeds, }: RendererProps<CustomPropTypes>): JSX.Element;
+declare function Renderer<CustomPropTypes>({ renderString, EmbedRenderer, customTag, className, couldHaveEmbeds, }: RendererProps<CustomPropTypes>): JSX.Element;
 
-export { Editor, EditorProps, Renderer, RendererProps, buildContainer, toolbarOptions };
+export { Editor, EditorProps, Renderer, RendererProps, ToolbarOptions, buildContainer };
