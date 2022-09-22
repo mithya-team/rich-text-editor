@@ -1,5 +1,7 @@
-/// <reference types="react" />
-declare enum toolbarOptions {
+import React, { ReactNode } from 'react';
+import { ReactQuillProps } from 'react-quill';
+
+declare enum ToolbarOptions {
     fontStyle = 0,
     quoteCode = 1,
     headers = 2,
@@ -11,13 +13,33 @@ declare enum toolbarOptions {
     clear = 8,
     image = 9
 }
-declare const buildContainer: (options: toolbarOptions[] | undefined) => any;
+declare const buildContainer: (options: ToolbarOptions[] | null, AddEmbedHandler: React.FC<{
+    onFinish: (embedObject: Object) => void;
+}> | null) => (Object | string[])[];
 
 interface EditorProps {
-    quillProps: any | undefined;
-    imageUploader: ((file: File) => Promise<string>) | undefined;
-    options: toolbarOptions[] | undefined;
+    quillProps?: ReactQuillProps | null;
+    imageUploader?: ((file: File) => Promise<string>) | null | undefined;
+    ImageUploadHandler?: React.FC<{
+        onFinish: (url: string) => void;
+    }> | null;
+    AddEmbedHandler?: React.FC<{
+        onFinish: (embedObject: Object) => void;
+    }> | null;
+    options?: ToolbarOptions[] | null | undefined;
+    customTag?: string;
+    className?: string;
+    onChange?: ((value: string) => void) | undefined;
 }
-declare const Editor: ({ quillProps, imageUploader, options }: EditorProps) => JSX.Element;
+declare const Editor: ({ quillProps, imageUploader, ImageUploadHandler, AddEmbedHandler, options, customTag, className, onChange, }: EditorProps) => JSX.Element;
 
-export { Editor, EditorProps, buildContainer, toolbarOptions };
+interface RendererProps<CustomPropTypes = unknown> {
+    renderString: string;
+    EmbedRenderer?: (props: CustomPropTypes) => ReactNode;
+    className?: string;
+    couldHaveEmbeds?: boolean;
+    customTag?: string;
+}
+declare function Renderer<CustomPropTypes>({ renderString, EmbedRenderer, customTag, className, couldHaveEmbeds, }: RendererProps<CustomPropTypes>): JSX.Element;
+
+export { Editor, EditorProps, Renderer, RendererProps, ToolbarOptions, buildContainer };

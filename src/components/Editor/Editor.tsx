@@ -1,42 +1,111 @@
 import React, { useMemo, useRef, useState } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import ReactQuill, { ReactQuillProps, Quill } from "react-quill";
 import { Modal } from "../Modal";
+import { buildContainer, ToolbarOptions } from "./ContainerBuilder";
+import { buildHandler } from "./HandlerBuilder";
+import { Embed } from "../Embed";
+import "react-quill/dist/quill.snow.css";
 import "./Editor.css";
-import { buildContainer, toolbarOptions } from "./ContainerBuilder";
 
 export interface EditorProps {
-  quillProps: any | undefined;
-  imageUploader: ((file: File) => Promise<string>) | undefined;
-  options: toolbarOptions[] | undefined;
+  quillProps?: ReactQuillProps | null;
+  imageUploader?: ((file: File) => Promise<string>) | null | undefined;
+  ImageUploadHandler?: React.FC<{ onFinish: (url: string) => void }> | null;
+  AddEmbedHandler?: React.FC<{
+    onFinish: (embedObject: Object) => void;
+  }> | null;
+  options?: ToolbarOptions[] | null | undefined;
+  customTag?: string;
+  className?: string;
+  onChange?: ((value: string) => void) | undefined;
 }
 
-export const Editor = ({ quillProps, imageUploader, options }: EditorProps) => {
-  const [showModal, setShowModal] = useState(false);
-  const openModal = () => setShowModal(true);
-  const closeModal = () => setShowModal(false);
-  const quillObj: any = useRef();
+export const Editor = ({
+  quillProps = null,
+  imageUploader = null,
+  ImageUploadHandler = null,
+  AddEmbedHandler = null,
+  options = null,
+  customTag = "default",
+  className = "editor-main",
+  onChange,
+}: EditorProps) => {
+  if (AddEmbedHandler) {
+    Quill.register(
+      {
+        "formats/customembed": class NewEmbed extends Embed {
+          static tagName = customTag;
+        },
+      },
+      true
+    );
+  }
+
+  const [showImageHandler, setShowImageHandler] = useState(false);
+  const [showEmbedHandler, setEmbedHandler] = useState(false);
+
+  const openImageHandlerModal = () => {
+    setShowImageHandler(true);
+  };
+  const openEmbedHandlerModal = () => {
+    setEmbedHandler(true);
+  };
+
+  const quillObj: React.LegacyRef<ReactQuill> | null =
+    useRef<ReactQuill | null>(null);
+
+  const insertImage = (url: string) => {
+    if (!quillObj || !quillObj.current) return;
+    const range = quillObj.current.getEditor().getSelection(true);
+    quillObj.current.getEditor().insertEmbed(range.index, "image", url);
+    setShowImageHandler(false);
+  };
+
+  const addEmbed = (embedObject: Object) => {
+    if (!quillObj || !quillObj.current) return;
+    const range = quillObj.current.getEditor().getSelection(true);
+    const type = "customembed";
+    quillObj.current.getEditor().insertEmbed(range.index, type, embedObject);
+    setEmbedHandler(false);
+  };
+
+  const ImageModalBox = useMemo(() => {
+    if (showImageHandler) {
+      if (ImageUploadHandler)
+        return <ImageUploadHandler onFinish={insertImage} />;
+      else if (imageUploader)
+        return <Modal imageUploader={imageUploader} onFinish={insertImage} />;
+    } else return "";
+  }, [showImageHandler, ImageUploadHandler, imageUploader]);
 
   const modules = useMemo(() => {
     return {
       toolbar: {
-        container: buildContainer(options),
-        handlers: imageUploader ? { image: openModal } : {},
+        container: buildContainer(options, AddEmbedHandler),
+        handlers: buildHandler(
+          imageUploader,
+          ImageUploadHandler,
+          AddEmbedHandler,
+          openEmbedHandlerModal,
+          openImageHandlerModal
+        ),
       },
     };
   }, [options, imageUploader]);
 
   return (
-    <div className="main">
+    <div className={className}>
       <div>
-        <ReactQuill modules={modules} {...quillProps} ref={quillObj} />
+        <ReactQuill
+          modules={modules}
+          {...quillProps}
+          ref={quillObj}
+          onChange={onChange}
+        />
+        {ImageModalBox}
 
-        {imageUploader && showModal && (
-          <Modal
-            imageUploader={imageUploader}
-            quillObj={quillObj}
-            closeModal={closeModal}
-          />
+        {AddEmbedHandler && showEmbedHandler && (
+          <AddEmbedHandler onFinish={addEmbed} />
         )}
       </div>
     </div>

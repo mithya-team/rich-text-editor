@@ -1,10 +1,20 @@
-/// <reference types="react" />
+import React from "react";
+import { ReactQuillProps } from "react-quill";
+import { ToolbarOptions } from "./ContainerBuilder";
 import "react-quill/dist/quill.snow.css";
 import "./Editor.css";
-import { toolbarOptions } from "./ContainerBuilder";
 export interface EditorProps {
-    quillProps: any | undefined;
-    imageUploader: ((file: File) => Promise<string>) | undefined;
-    options: toolbarOptions[] | undefined;
+    quillProps?: ReactQuillProps | null;
+    imageUploader?: ((file: File) => Promise<string>) | null | undefined;
+    ImageUploadHandler?: React.FC<{
+        onFinish: (url: string) => void;
+    }> | null;
+    AddEmbedHandler?: React.FC<{
+        onFinish: (embedObject: Object) => void;
+    }> | null;
+    options?: ToolbarOptions[] | null | undefined;
+    customTag?: string;
+    className?: string;
+    onChange?: ((value: string) => void) | undefined;
 }
-export declare const Editor: ({ quillProps, imageUploader, options }: EditorProps) => JSX.Element;
+export declare const Editor: ({ quillProps, imageUploader, ImageUploadHandler, AddEmbedHandler, options, customTag, className, onChange, }: EditorProps) => JSX.Element;

@@ -2,12 +2,6 @@ import React, { useCallback, useState } from "react";
 import { UploadZone } from "../UploadZone";
 import "./Modal.css";
 
-export interface ModalProps {
-  imageUploader: (file: File) => Promise<string>;
-  quillObj: any;
-  closeModal: () => void;
-}
-
 const onDefault = () => {
   return <p>Drag 'n' drop some files here, or click to select files</p>;
 };
@@ -16,14 +10,10 @@ const onUploading = () => {
   return <div className="uploading">Uploading...</div>;
 };
 
-export const Modal = ({ imageUploader, quillObj, closeModal }: ModalProps) => {
-  const insertImage = (url: string) => {
-    quillObj.current.getEditor().focus();
-    const range = quillObj.current.getEditor().getSelection();
-    quillObj.current.getEditor().insertEmbed(range.index, "image", url);
-    closeModal();
-  };
-
+export const Modal: React.FC<{
+  onFinish: (url: string) => void;
+  imageUploader: (file: File) => Promise<string>;
+}> = ({ onFinish, imageUploader }) => {
   return (
     <div className="backdrop">
       <div className="foreground">
@@ -31,7 +21,7 @@ export const Modal = ({ imageUploader, quillObj, closeModal }: ModalProps) => {
           onDefault={onDefault}
           onUploading={onUploading}
           uploadTo={imageUploader}
-          onFinish={insertImage}
+          onFinish={onFinish}
         />
       </div>
     </div>
