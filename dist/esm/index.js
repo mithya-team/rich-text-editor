@@ -3024,6 +3024,7 @@ const BlockEmbed = Quill.import("blots/block/embed");
 class Embed extends BlockEmbed {
     static create(embedObject) {
         const node = super.create();
+        node.setAttribute("content-editable", "false");
         node.innerHTML = JSON.stringify(embedObject);
         return node;
     }
@@ -3136,7 +3137,7 @@ function chunkOutRenderString(renderString, separators) {
 
 function Renderer({ renderString, EmbedRenderer, customTag = "default", className = "", couldHaveEmbeds = true, }) {
     const separators = {
-        start: `<${customTag}>`,
+        start: `<${customTag} content-editable="false">`,
         end: `</${customTag}>`,
     };
     const chunkedOutRenderString = couldHaveEmbeds
@@ -3155,6 +3156,7 @@ function Renderer({ renderString, EmbedRenderer, customTag = "default", classNam
             }
         });
     }, [chunkedOutRenderString, EmbedRenderer]);
+    console.log(elements);
     return React.createElement("div", { className: className }, elements);
 }
 

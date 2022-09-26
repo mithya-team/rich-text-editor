@@ -17,7 +17,7 @@ export function Renderer<CustomPropTypes>({
   couldHaveEmbeds = true,
 }: RendererProps<CustomPropTypes>) {
   const separators = {
-    start: `<${customTag}>`,
+    start: `<${customTag} content-editable="false">`,
     end: `</${customTag}>`,
   };
   const chunkedOutRenderString = couldHaveEmbeds
@@ -37,6 +37,7 @@ export function Renderer<CustomPropTypes>({
     });
   }, [chunkedOutRenderString, EmbedRenderer]);
 
+  console.log(elements);
   return <div className={className}>{elements}</div>;
 }
 export default Renderer;
