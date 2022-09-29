@@ -17,11 +17,11 @@ export function Renderer<CustomPropTypes>({
   couldHaveEmbeds = true,
 }: RendererProps<CustomPropTypes>) {
   const separators = {
-    start: `<${customTag} content-editable="false">`,
-    end: `</${customTag}>`,
+    start: `<${customTag} data-json=`,
+    end: `"></${customTag}>`,
   };
   const chunkedOutRenderString = couldHaveEmbeds
-    ? chunkOutRenderString(renderString, separators)
+    ? chunkOutRenderString(renderString, customTag)
     : [renderString];
 
   const elements = useMemo(() => {

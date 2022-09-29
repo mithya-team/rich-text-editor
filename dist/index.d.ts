@@ -26,12 +26,13 @@ interface EditorProps {
     AddEmbedHandler?: React.FC<{
         onFinish: (embedObject: Object) => void;
     }> | null;
+    EmbedPlaceholder?: React.FC | null;
     options?: ToolbarOptions[] | null | undefined;
     customTag?: string;
     className?: string;
     onChange?: ((value: string) => void) | undefined;
 }
-declare const Editor: ({ quillProps, imageUploader, ImageUploadHandler, AddEmbedHandler, options, customTag, className, onChange, }: EditorProps) => JSX.Element;
+declare const Editor: ({ quillProps, imageUploader, ImageUploadHandler, AddEmbedHandler, EmbedPlaceholder, options, customTag, className, onChange, }: EditorProps) => JSX.Element;
 
 interface RendererProps<CustomPropTypes = unknown> {
     renderString: string;

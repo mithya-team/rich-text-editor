@@ -4,34 +4,38 @@
 
 export function chunkOutRenderString<Delta>(
   renderString: string,
-  separators: { start: string; end: string }
+  customTag: string
 ): Array<Delta | string> {
-  const separatorStart = separators.start;
-  const separatorEnd = separators.end;
-
   let chunks: Array<string | Delta> = [];
   let _renderString = renderString;
+
+  const openingTagStart = `<${customTag}`;
+  const closingTag = `</${customTag}>`;
+
   while (_renderString.length) {
-    let startIndex = _renderString.indexOf(separatorStart);
-    if (startIndex !== -1) {
-      let stringChunk = _renderString.substring(0, startIndex);
+    console.log(_renderString.length);
+    let openingTagStartIndex = _renderString.indexOf(openingTagStart);
+
+    if (openingTagStartIndex !== -1) {
+      let stringChunk = _renderString.substring(0, openingTagStartIndex);
       chunks.push(stringChunk);
-      let temp = _renderString.substring(startIndex + separatorStart.length);
-      let endIndex = temp.indexOf(separatorEnd);
-      if (endIndex !== -1) {
-        let jsonChunk = temp.substring(0, endIndex);
-        jsonChunk = JSON.parse(jsonChunk);
-        chunks.push(jsonChunk);
-        _renderString = temp.substring(endIndex + separatorEnd.length);
-      } else {
-        // assuming the rest to be jsonChunk.
-        let jsonChunk = temp;
 
-        jsonChunk = JSON.parse(jsonChunk);
+      let startIndex = _renderString.indexOf(openingTagStart);
+      let temp = _renderString.substring(startIndex);
+      let endIndex = temp.indexOf(closingTag) + closingTag.length;
+      let elemString = temp.substring(0, endIndex);
 
-        chunks.push(jsonChunk);
-        _renderString = "";
+      const customTag = document.createElement("div");
+      customTag.innerHTML = elemString;
+      let elem = customTag?.children[0];
+      if (elem instanceof HTMLElement) {
+        let jsonChunk = elem.dataset.json;
+        if (jsonChunk) chunks.push(JSON.parse(jsonChunk));
       }
+
+      temp = temp.substring(endIndex);
+
+      _renderString = temp;
     } else {
       chunks = [...chunks, _renderString];
       _renderString = "";
