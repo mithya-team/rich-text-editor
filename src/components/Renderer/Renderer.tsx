@@ -16,10 +16,6 @@ export function Renderer<CustomPropTypes>({
   className = "",
   couldHaveEmbeds = true,
 }: RendererProps<CustomPropTypes>) {
-  const separators = {
-    start: `<${customTag} data-json=`,
-    end: `"></${customTag}>`,
-  };
   const chunkedOutRenderString = couldHaveEmbeds
     ? chunkOutRenderString(renderString, customTag)
     : [renderString];

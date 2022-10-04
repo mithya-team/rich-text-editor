@@ -3139,7 +3139,6 @@ function chunkOutRenderString(renderString, customTag) {
             let temp = _renderString.substring(startIndex);
             let endIndex = temp.indexOf(closingTag) + closingTag.length;
             let elemString = temp.substring(0, endIndex);
-            console.log("constructing");
             const customTag = document.createElement("div");
             customTag.innerHTML = elemString;
             let elem = customTag === null || customTag === void 0 ? void 0 : customTag.children[0];
