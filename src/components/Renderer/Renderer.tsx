@@ -16,12 +16,8 @@ export function Renderer<CustomPropTypes>({
   className = "",
   couldHaveEmbeds = true,
 }: RendererProps<CustomPropTypes>) {
-  const separators = {
-    start: `<${customTag}>`,
-    end: `</${customTag}>`,
-  };
   const chunkedOutRenderString = couldHaveEmbeds
-    ? chunkOutRenderString(renderString, separators)
+    ? chunkOutRenderString(renderString, customTag)
     : [renderString];
 
   const elements = useMemo(() => {
@@ -37,6 +33,7 @@ export function Renderer<CustomPropTypes>({
     });
   }, [chunkedOutRenderString, EmbedRenderer]);
 
+  console.log(elements);
   return <div className={className}>{elements}</div>;
 }
 export default Renderer;

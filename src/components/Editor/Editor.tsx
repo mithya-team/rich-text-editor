@@ -14,6 +14,7 @@ export interface EditorProps {
   AddEmbedHandler?: React.FC<{
     onFinish: (embedObject: Object) => void;
   }> | null;
+  EmbedPlaceholder?: React.FC | null;
   options?: ToolbarOptions[] | null | undefined;
   customTag?: string;
   className?: string;
@@ -25,6 +26,7 @@ export const Editor = ({
   imageUploader = null,
   ImageUploadHandler = null,
   AddEmbedHandler = null,
+  EmbedPlaceholder = null,
   options = null,
   customTag = "default",
   className = "editor-main",
@@ -65,7 +67,9 @@ export const Editor = ({
     if (!quillObj || !quillObj.current) return;
     const range = quillObj.current.getEditor().getSelection(true);
     const type = "customembed";
-    quillObj.current.getEditor().insertEmbed(range.index, type, embedObject);
+    quillObj.current
+      .getEditor()
+      .insertEmbed(range.index, type, [embedObject, EmbedPlaceholder]);
     setEmbedHandler(false);
   };
 
