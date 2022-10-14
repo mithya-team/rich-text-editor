@@ -3089,6 +3089,10 @@ const Editor = ({ quillProps = null, imageUploader = null, ImageUploadHandler = 
     const addEmbed = (embedObject) => {
         if (!quillObj || !quillObj.current)
             return;
+        if (JSON.stringify(embedObject) == "{}") {
+            setEmbedHandler(false);
+            return;
+        }
         const range = quillObj.current.getEditor().getSelection(true);
         const type = "customembed";
         quillObj.current
