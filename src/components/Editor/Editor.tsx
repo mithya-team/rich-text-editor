@@ -65,6 +65,10 @@ export const Editor = ({
 
   const addEmbed = (embedObject: Object) => {
     if (!quillObj || !quillObj.current) return;
+    if (JSON.stringify(embedObject) == "{}") {
+      setEmbedHandler(false);
+      return;
+    }
     const range = quillObj.current.getEditor().getSelection(true);
     const type = "customembed";
     quillObj.current
